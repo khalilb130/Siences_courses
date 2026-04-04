@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartes Mentales - Sciences</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .card-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: #7f8c8d;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 1.05em;
+        }
+
+        .card-interactive {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-interactive h2,
+        .card-interactive p {
+            color: white;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .badge-simple {
+            background: #3498db;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Cartes Mentales - Physique 1ère</h1>
+            <p>Choisissez la version qui vous convient</p>
+        </div>
+
+        <div class="cards-grid">
+            <a href="Physique/1ere/Energies/carte_mentale_energie.html" class="card card-interactive">
+                <div class="card-icon">🎮</div>
+                <h2>Carte Interactive</h2>
+                <p>Version complète avec interactions, animations et exercices. Parfait pour une exploration approfondie du concept d'énergie.</p>
+                <center><span class="badge">Recommandée</span></center>
+            </a>
+
+            <a href="Physique/1ere/Energies/carte_mentale_energie_simple.html" class="card">
+                <div class="card-icon">📄</div>
+                <h2>Carte Simplifiée</h2>
+                <p>Version épurée et facile à imprimer. Idéale pour une révision rapide ou une consultation hors ligne.</p>
+                <center><span class="badge badge-simple">Simple</span></center>
+            </a>
+        </div>
+
+        <footer>
+            <p>© Sciences Courses - Ressources pédagogiques</p>
+        </footer>
+    </div>
+</body>
+</html>
