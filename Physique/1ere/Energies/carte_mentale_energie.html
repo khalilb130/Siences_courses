@@ -77,20 +77,21 @@
             cursor: pointer;
             transition: all 0.3s;
             max-width: 350px;
+            border-left: 6px solid;
         }
 
         .branch:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.02);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .branch h3 {
-            color: #667eea;
             margin-bottom: 15px;
             font-size: 1.3em;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-weight: bold;
         }
 
         .branch-icon {
@@ -106,7 +107,7 @@
             text-align: center;
             color: #2c3e50;
             margin: 10px 0;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid;
             font-weight: bold;
         }
 
@@ -129,9 +130,58 @@
         }
 
         .bullet {
-            color: #667eea;
             font-weight: bold;
+            font-size: 1.1em;
         }
+
+        /* Couleurs distinctes pour chaque branche */
+        .branch-1 {
+            border-left-color: #007bff;
+            background: linear-gradient(to right, #e7f3ff 0%, white 20%);
+        }
+        .branch-1 h3 { color: #007bff; }
+        .branch-1 .formula { border-left-color: #007bff; }
+        .branch-1 .bullet { color: #007bff; }
+
+        .branch-2 {
+            border-left-color: #6f42c1;
+            background: linear-gradient(to right, #f3e7ff 0%, white 20%);
+        }
+        .branch-2 h3 { color: #6f42c1; }
+        .branch-2 .formula { border-left-color: #6f42c1; }
+        .branch-2 .bullet { color: #6f42c1; }
+
+        .branch-3 {
+            border-left-color: #28a745;
+            background: linear-gradient(to right, #d4edda 0%, white 20%);
+        }
+        .branch-3 h3 { color: #28a745; }
+        .branch-3 .formula { border-left-color: #28a745; }
+        .branch-3 .bullet { color: #28a745; }
+
+        .branch-4 {
+            border-left-color: #20c997;
+            background: linear-gradient(to right, #d2f4ea 0%, white 20%);
+        }
+        .branch-4 h3 { color: #20c997; }
+        .branch-4 .formula { border-left-color: #20c997; }
+        .branch-4 .bullet { color: #20c997; }
+
+        .branch-5 {
+            border-left-color: #dc3545;
+            background: linear-gradient(to right, #f8d7da 0%, white 20%);
+        }
+        .branch-5 h3 { color: #dc3545; }
+        .branch-5 .formula { border-left-color: #dc3545; }
+        .branch-5 .bullet { color: #dc3545; }
+
+        .branch-6 {
+            border-left-color: #fd7e14;
+            background: linear-gradient(to right, #ffe5d0 0%, white 20%);
+        }
+        .branch-6 h3 { color: #fd7e14; }
+        .branch-6 .formula { border-left-color: #fd7e14; }
+        .branch-6 .bullet { color: #fd7e14; }
 
         /* Positionnement des branches */
         .branch-1 {
