@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Mentale - Énergie Cinétique & Mécanique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .mind-map {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .central-section {
+            grid-column: 1 / -1;
+            text-align: center;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 40px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .central-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .central-formula {
+            font-size: 2em;
+            font-family: 'Courier New', monospace;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        .branch-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+
+        .branch-card.blue {
+            border-color: #007bff;
+        }
+
+        .branch-card.purple {
+            border-color: #667eea;
+        }
+
+        .branch-card.green {
+            border-color: #28a745;
+        }
+
+        .branch-card.orange {
+            border-color: #fd7e14;
+        }
+
+        .branch-card.red {
+            border-color: #dc3545;
+        }
+
+        .branch-card.teal {
+            border-color: #17a2b8;
+        }
+
+        .branch-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #2c3e50;
+        }
+
+        .branch-icon {
+            font-size: 1.8em;
+        }
+
+        .formula-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px solid #e9ecef;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .info-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .info-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box h4 {
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .warning-box ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .success-box h4 {
+            color: #155724;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .example-box h4 {
+            color: #004085;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .section-divider {
+            grid-column: 1 / -1;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #667eea, transparent);
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .mind-map {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mind-map {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        sub {
+            font-size: 0.7em;
+        }
+
+        .conversion-highlight {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1>⚡ CARTE MENTALE - ÉNERGIE ⚡</h1>
+        <p>Énergie Cinétique & Énergie Mécanique - Résumé Complet</p>
+    </div>
+
+    <div class="container">
+        <!-- Section Centrale -->
+        <div class="central-section">
+            <h2>🎯 ÉNERGIE MÉCANIQUE</h2>
+            <div class="central-formula">
+                E<sub>m</sub> = E<sub>c</sub> + E<sub>pp</sub>
+            </div>
+            <p style="font-size: 1.2em; margin-top: 20px;">
+                Somme de l'énergie du mouvement et de l'énergie de position
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; text-align: left;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                    <strong style="font-size: 1.2em;">E<sub>c</sub> = ½ m v²</strong>
+                    <p style="margin-top: 5px;">Énergie cinétique (mouvement)</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                    <strong style="font-size: 1.2em;">E<sub>pp</sub> = m g h</strong>
+                    <p style="margin-top: 5px;">Énergie potentielle (position)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte Mentale -->
+        <div class="mind-map">
+            <!-- Branche 1 : Énergie Cinétique -->
+            <div class="branch-card blue">
+                <h3><span class="branch-icon">📘</span>Énergie Cinétique</h3>
+                
+                <div class="formula-box">E<sub>c</sub> = ½ m v²</div>
+                
+                <h4 style="color: #007bff; margin-top: 20px;">Définition</h4>
+                <p>Énergie que possède un objet du fait de son <strong>mouvement</strong>.</p>
+                
+                <h4 style="color: #007bff; margin-top: 15px;">Caractéristiques</h4>
+                <ul class="info-list">
+                    <li>Toujours <strong>positive ou nulle</strong></li>
+                    <li>Si v double → E<sub>c</sub> × 4</li>
+                    <li>Si m double → E<sub>c</sub> × 2</li>
+                    <li>E<sub>c</sub> = 0 si v = 0 (immobile)</li>
+                </ul>
+
+                <h4 style="color: #007bff; margin-top: 15px;">Unités</h4>
+                <ul class="info-list">
+                    <li>E<sub>c</sub> en joules (J)</li>
+                    <li>m en kilogrammes (kg)</li>
+                    <li>v en mètres par seconde (m/s)</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>⚠️ N'oubliez jamais le ½ !</h4>
+                </div>
+            </div>
+
+            <!-- Branche 2 : TEC -->
+            <div class="branch-card purple">
+                <h3><span class="branch-icon">🔧</span>Théorème E<sub>c</sub></h3>
+                
+                <div class="formula-box">ΔE<sub>c</sub> = W(forces)</div>
+                
+                <h4 style="color: #667eea; margin-top: 20px;">Énoncé</h4>
+                <p>La <strong>variation d'énergie cinétique</strong> égale la <strong>somme des travaux</strong> des forces.</p>
+                
+                <div class="formula-box" style="font-size: 1.1em;">
+                    E<sub>c</sub>(B) - E<sub>c</sub>(A) = ΣW
+                </div>
+
+                <h4 style="color: #667eea; margin-top: 15px;">Applications</h4>
+                <ul class="info-list">
+                    <li>Calculer la vitesse finale</li>
+                    <li>Calculer le travail d'une force</li>
+                    <li>Distance de freinage</li>
+                    <li>Analyser accélération/freinage</li>
+                </ul>
+
+                <h4 style="color: #667eea; margin-top: 15px;">Interprétation</h4>
+                <ul class="info-list">
+                    <li>W > 0 → accélération</li>
+                    <li>W < 0 → freinage</li>
+                    <li>W = 0 → vitesse constante</li>
+                </ul>
+            </div>
+
+            <!-- Branche 3 : Travail d'une Force -->
+            <div class="branch-card orange">
+                <h3><span class="branch-icon">💼</span>Travail d'une Force</h3>
+                
+                <div class="formula-box">W = F · d · cos(α)</div>
+                
+                <h4 style="color: #fd7e14; margin-top: 20px;">Cas particuliers</h4>
+                <table>
+                    <tr>
+                        <th>Angle α</th>
+                        <th>Type</th>
+                        <th>Formule</th>
+                    </tr>
+                    <tr>
+                        <td>0°</td>
+                        <td>Moteur ✅</td>
+                        <td>W = F·d</td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>Nul ⚪</td>
+                        <td>W = 0</td>
+                    </tr>
+                    <tr>
+                        <td>180°</td>
+                        <td>Résistant ❌</td>
+                        <td>W = -F·d</td>
+                    </tr>
+                </table>
+
+                <h4 style="color: #fd7e14; margin-top: 15px;">Exemples de forces</h4>
+                <ul class="info-list">
+                    <li><strong>Poids :</strong> W = mgh</li>
+                    <li><strong>Frottements :</strong> W < 0 (toujours)</li>
+                    <li><strong>Réaction normale :</strong> W = 0</li>
+                </ul>
+
+                <div class="example-box">
+                    <h4>Poids</h4>
+                    <p>• Descente : W > 0 (moteur)</p>
+                    <p>• Montée : W < 0 (résistant)</p>
+                </div>
+            </div>
+
+            <!-- Branche 4 : Énergie Potentielle -->
+            <div class="branch-card green">
+                <h3><span class="branch-icon">⛰️</span>Énergie Potentielle</h3>
+                
+                <div class="formula-box">E<sub>pp</sub> = m g h</div>
+                
+                <h4 style="color: #28a745; margin-top: 20px;">Définition</h4>
+                <p>Énergie d'un objet du fait de sa <strong>position</strong> dans un champ de pesanteur.</p>
+                
+                <h4 style="color: #28a745; margin-top: 15px;">Paramètres</h4>
+                <ul class="info-list">
+                    <li>m : masse (kg)</li>
+                    <li>g : 9,8 m/s² (ou 10 m/s²)</li>
+                    <li>h : altitude (m)</li>
+                </ul>
+
+                <h4 style="color: #28a745; margin-top: 15px;">Caractéristiques</h4>
+                <ul class="info-list">
+                    <li>Dépend du <strong>niveau de référence</strong></li>
+                    <li>E<sub>pp</sub> > 0 au-dessus</li>
+                    <li>E<sub>pp</sub> < 0 en-dessous</li>
+                    <li>ΔE<sub>pp</sub> = mg(h₂ - h₁)</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>⚠️ Toujours choisir et noter le niveau de référence !</h4>
+                    <p>Généralement : point le plus bas</p>
+                </div>
+            </div>
+
+            <!-- Branche 5 : Conservation -->
+            <div class="branch-card teal">
+                <h3><span class="branch-icon">⚖️</span>Conservation E<sub>m</sub></h3>
+                
+                <div class="formula-box">E<sub>m</sub>(A) = E<sub>m</sub>(B)</div>
+                
+                <div class="success-box">
+                    <h4>✅ Condition</h4>
+                    <p><strong>Si forces conservatives uniquement</strong> (pas de frottements)</p>
+                </div>
+
+                <h4 style="color: #17a2b8; margin-top: 15px;">Forces conservatives</h4>
+                <ul class="info-list">
+                    <li>Poids</li>
+                    <li>Force électrostatique</li>
+                    <li>Force élastique</li>
+                </ul>
+
+                <h4 style="color: #17a2b8; margin-top: 15px;">Systèmes conservatifs</h4>
+                <table>
+                    <tr>
+                        <th>Système</th>
+                        <th>Conversion</th>
+                    </tr>
+                    <tr>
+                        <td>Chute libre</td>
+                        <td>E<sub>pp</sub> → E<sub>c</sub></td>
+                    </tr>
+                    <tr>
+                        <td>Pendule idéal</td>
+                        <td>E<sub>c</sub> ⇄ E<sub>pp</sub></td>
+                    </tr>
+                    <tr>
+                        <td>Toboggan lisse</td>
+                        <td>E<sub>pp</sub> → E<sub>c</sub></td>
+                    </tr>
+                </table>
+
+                <div class="example-box">
+                    <h4>💡 Principe</h4>
+                    <p>L'énergie se <strong>transforme</strong> mais ne disparaît pas !</p>
+                </div>
+            </div>
+
+            <!-- Branche 6 : Variation -->
+            <div class="branch-card red">
+                <h3><span class="branch-icon">🔴</span>Variation E<sub>m</sub></h3>
+                
+                <div class="formula-box">ΔE<sub>m</sub> = W(f.n.c)</div>
+                
+                <div class="warning-box">
+                    <h4>⚠️ Condition</h4>
+                    <p><strong>Si forces non conservatives</strong> (frottements, résistance air)</p>
+                </div>
+
+                <h4 style="color: #dc3545; margin-top: 15px;">Forces non conservatives</h4>
+                <ul class="info-list">
+                    <li>Frottements</li>
+                    <li>Résistance de l'air</li>
+                    <li>Forces motrices</li>
+                    <li>Forces de traction</li>
+                </ul>
+
+                <h4 style="color: #dc3545; margin-top: 15px;">Analyse du signe</h4>
+                <table>
+                    <tr>
+                        <th>W</th>
+                        <th>ΔE<sub>m</sub></th>
+                        <th>Effet</th>
+                    </tr>
+                    <tr>
+                        <td>W < 0</td>
+                        <td>ΔE<sub>m</sub> < 0</td>
+                        <td>Perte d'énergie</td>
+                    </tr>
+                    <tr>
+                        <td>W > 0</td>
+                        <td>ΔE<sub>m</sub> > 0</td>
+                        <td>Gain d'énergie</td>
+                    </tr>
+                </table>
+
+                <div class="example-box">
+                    <h4>Exemples</h4>
+                    <p>• Freinage : E<sub>c</sub> → Chaleur</p>
+                    <p>• Parachute : E<sub>pp</sub> → Chaleur</p>
+                    <p>• Moteur : Énergie → E<sub>m</sub></p>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="section-divider"></div>
+
+            <!-- Section Conversions -->
+            <div class="branch-card blue" style="grid-column: 1 / 2;">
+                <h3><span class="branch-icon">🧮</span>Conversions Vitesse</h3>
+                
+                <div class="conversion-highlight">
+                    km/h → m/s : ÷ 3,6
+                </div>
+                <div class="conversion-highlight">
+                    m/s → km/h : × 3,6
+                </div>
+
+                <h4 style="color: #007bff; margin-top: 15px;">À mémoriser</h4>
+                <table>
+                    <tr>
+                        <th>km/h</th>
+                        <th>m/s</th>
+                    </tr>
+                    <tr>
+                        <td>36 km/h</td>
+                        <td>10 m/s</td>
+                    </tr>
+                    <tr>
+                        <td>72 km/h</td>
+                        <td>20 m/s</td>
+                    </tr>
+                    <tr>
+                        <td>90 km/h</td>
+                        <td>25 m/s</td>
+                    </tr>
+                    <tr>
+                        <td>108 km/h</td>
+                        <td>30 m/s</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Section Méthodologie -->
+            <div class="branch-card purple" style="grid-column: 2 / 3;">
+                <h3><span class="branch-icon">🎯</span>Méthodologie</h3>
+                
+                <h4 style="color: #667eea;">1. SCHÉMA</h4>
+                <p style="margin-left: 15px;">États A et B, h, v, forces</p>
+                
+                <h4 style="color: #667eea; margin-top: 10px;">2. RÉFÉRENCE</h4>
+                <p style="margin-left: 15px;">Choisir h = 0 et le noter</p>
+                
+                <h4 style="color: #667eea; margin-top: 10px;">3. FORCES</h4>
+                <p style="margin-left: 15px;">Conservatives / non conservatives</p>
+                
+                <h4 style="color: #667eea; margin-top: 10px;">4. PRINCIPE</h4>
+                <p style="margin-left: 15px;">Conservation ou variation ?</p>
+                
+                <h4 style="color: #667eea; margin-top: 10px;">5. CALCUL</h4>
+                <p style="margin-left: 15px;">Appliquer, vérifier unités</p>
+            </div>
+
+            <!-- Section Erreurs -->
+            <div class="branch-card red" style="grid-column: 3 / 4;">
+                <h3><span class="branch-icon">⚠️</span>Erreurs Fréquentes</h3>
+                
+                <ul class="info-list">
+                    <li style="color: #dc3545;">Oublier le ½ dans E<sub>c</sub></li>
+                    <li style="color: #dc3545;">Ne pas convertir km/h en m/s</li>
+                    <li style="color: #dc3545;">Confondre E<sub>m</sub> et E<sub>c</sub></li>
+                    <li style="color: #dc3545;">Oublier le niveau de référence</li>
+                    <li style="color: #dc3545;">Mauvais signe du travail</li>
+                    <li style="color: #dc3545;">Négliger les frottements</li>
+                    <li style="color: #dc3545;">Résultat sans unité</li>
+                </ul>
+            </div>
+
+            <!-- Section Exemple Complet -->
+            <div class="branch-card green" style="grid-column: 1 / -1;">
+                <h3><span class="branch-icon">📝</span>Exemple Complet : Chute Libre</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+                    <div>
+                        <h4 style="color: #28a745;">Énoncé</h4>
+                        <p>Une bille (m = 0,5 kg) tombe de h = 5 m sans frottements. Quelle vitesse au sol ?</p>
+                        
+                        <h4 style="color: #28a745; margin-top: 15px;">Données</h4>
+                        <ul>
+                            <li>m = 0,5 kg</li>
+                            <li>h = 5 m</li>
+                            <li>g = 10 m/s²</li>
+                            <li>v₀ = 0 (part du repos)</li>
+                            <li>Pas de frottements</li>
+                        </ul>
+
+                        <h4 style="color: #28a745; margin-top: 15px;">Référence</h4>
+                        <p>h = 0 au sol</p>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #28a745;">Résolution</h4>
+                        
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                            <strong>État A (en haut) :</strong>
+                            <p>• h(A) = 5 m, v(A) = 0</p>
+                            <p>• E<sub>c</sub>(A) = 0 J</p>
+                            <p>• E<sub>pp</sub>(A) = 0,5 × 10 × 5 = 25 J</p>
+                            <p>• <strong>E<sub>m</sub>(A) = 25 J</strong></p>
+                        </div>
+
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                            <strong>État B (au sol) :</strong>
+                            <p>• h(B) = 0 m, v(B) = ?</p>
+                            <p>• E<sub>c</sub>(B) = ½ × 0,5 × v²</p>
+                            <p>• E<sub>pp</sub>(B) = 0 J</p>
+                            <p>• <strong>E<sub>m</sub>(B) = 0,25v²</strong></p>
+                        </div>
+
+                        <div style="background: #d4edda; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                            <strong>Conservation :</strong>
+                            <p>E<sub>m</sub>(A) = E<sub>m</sub>(B)</p>
+                            <p>25 = 0,25v²</p>
+                            <p>v² = 100</p>
+                            <p style="font-size: 1.3em; color: #155724; margin-top: 10px;"><strong>→ v = 10 m/s</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>📚 Carte Mentale - Énergie Cinétique & Mécanique 📚</p>
+        <p style="margin-top: 10px; opacity: 0.8;">Toutes les informations essentielles sur une seule page</p>
+    </div>
+</body>
+</html>

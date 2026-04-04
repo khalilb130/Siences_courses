@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Mentale - Énergie Cinétique & Mécanique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .mind-map {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 800px;
+        }
+
+        .central-node {
+            position: relative;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 100;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .central-node:hover {
+            transform: scale(1.1);
+        }
+
+        .central-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .branch {
+            position: absolute;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            max-width: 350px;
+        }
+
+        .branch:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .branch h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .branch-icon {
+            font-size: 1.5em;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            text-align: center;
+            color: #2c3e50;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            font-weight: bold;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+            color: #495057;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .bullet {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Positionnement des branches */
+        .branch-1 {
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .branch-2 {
+            top: 150px;
+            right: 50px;
+        }
+
+        .branch-3 {
+            bottom: 150px;
+            right: 50px;
+        }
+
+        .branch-4 {
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .branch-5 {
+            bottom: 150px;
+            left: 50px;
+        }
+
+        .branch-6 {
+            top: 150px;
+            left: 50px;
+        }
+
+        /* Lignes de connexion */
+        .connector {
+            position: absolute;
+            background: rgba(255,255,255,0.3);
+            z-index: 1;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box h4 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .warning-box ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success-box h4 {
+            color: #155724;
+            margin-bottom: 8px;
+        }
+
+        .success-box ul {
+            margin-left: 20px;
+            color: #155724;
+        }
+
+        .example-box {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        .example-box h4 {
+            color: #004085;
+            margin-bottom: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 20px;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .conversion-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .conversion-table th,
+        .conversion-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .conversion-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .conversion-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 1200px) {
+            .branch {
+                position: static !important;
+                transform: none !important;
+                margin: 20px auto;
+                display: block;
+            }
+
+            .mind-map {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .central-node {
+                margin-bottom: 30px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Carte Mentale Interactive - Énergie ⚡</h1>
+        
+        <div class="mind-map">
+            <div class="central-node" onclick="openModal('central')">
+                <div class="central-icon">⚡</div>
+                <div>ÉNERGIE</div>
+                <div style="font-size: 0.6em; margin-top: 10px;">Cliquez pour explorer</div>
+            </div>
+
+            <div class="branch branch-1" onclick="openModal('ec-definition')">
+                <h3><span class="branch-icon">📘</span>Énergie Cinétique</h3>
+                <div class="formula">E<sub>c</sub> = ½ m v²</div>
+                <ul class="info-list">
+                    <li><span class="bullet">✓</span> Énergie du mouvement</li>
+                    <li><span class="bullet">✓</span> Toujours positive ou nulle</li>
+                    <li><span class="bullet">✓</span> Si v double → E<sub>c</sub> × 4</li>
+                </ul>
+            </div>
+
+            <div class="branch branch-2" onclick="openModal('tec')">
+                <h3><span class="branch-icon">🔧</span>Théorème E<sub>c</sub> (TEC)</h3>
+                <div class="formula">ΔE<sub>c</sub> = W(forces)</div>
+                <ul class="info-list">
+                    <li><span class="bullet">✓</span> Variation E<sub>c</sub> = Travail total</li>
+                    <li><span class="bullet">✓</span> Calcul de vitesse finale</li>
+                    <li><span class="bullet">✓</span> Distance de freinage</li>
+                </ul>
+            </div>
+
+            <div class="branch branch-3" onclick="openModal('em-definition')">
+                <h3><span class="branch-icon">📗</span>Énergie Mécanique</h3>
+                <div class="formula">E<sub>m</sub> = E<sub>c</sub> + E<sub>pp</sub></div>
+                <ul class="info-list">
+                    <li><span class="bullet">✓</span> E<sub>pp</sub> = m g h</li>
+                    <li><span class="bullet">✓</span> Dépend du niveau de référence</li>
+                    <li><span class="bullet">✓</span> Conversion E<sub>c</sub> ⇄ E<sub>pp</sub></li>
+                </ul>
+            </div>
+
+            <div class="branch branch-4" onclick="openModal('conservation')">
+                <h3><span class="branch-icon">⚖️</span>Conservation E<sub>m</sub></h3>
+                <div class="formula">E<sub>m</sub>(A) = E<sub>m</sub>(B)</div>
+                <ul class="info-list">
+                    <li><span class="bullet">✓</span> Si forces conservatives uniquement</li>
+                    <li><span class="bullet">✓</span> Pas de frottements</li>
+                    <li><span class="bullet">✓</span> Chute libre, pendule idéal</li>
+                </ul>
+            </div>
+
+            <div class="branch branch-5" onclick="openModal('variation')">
+                <h3><span class="branch-icon">🔴</span>Variation E<sub>m</sub></h3>
+                <div class="formula">ΔE<sub>m</sub> = W(frottements)</div>
+                <ul class="info-list">
+                    <li><span class="bullet">✓</span> Forces non conservatives</li>
+                    <li><span class="bullet">✓</span> W < 0 → perte d'énergie</li>
+                    <li><span class="bullet">✓</span> Dissipation en chaleur</li>
+                </ul>
+            </div>
+
+            <div class="branch branch-6" onclick="openModal('travail')">
+                <h3><span class="branch-icon">💼</span>Travail d'une Force</h3>
+                <div class="formula">W = F · d · cos(α)</div>
+                <ul class="info-list">
+                    <li><span class="bullet">✓</span> α = 0° → Moteur (W > 0)</li>
+                    <li><span class="bullet">✓</span> α = 90° → Nul (W = 0)</li>
+                    <li><span class="bullet">✓</span> α = 180° → Résistant (W < 0)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            💡 Cliquez sur chaque bulle pour voir les détails complets 💡
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const modalContents = {
+            'central': `
+                <h2 style="color: #667eea; text-align: center;">⚡ L'ÉNERGIE EN PHYSIQUE ⚡</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'intro')">Introduction</button>
+                    <button class="tab" onclick="switchTab(event, 'formules')">Formules Clés</button>
+                    <button class="tab" onclick="switchTab(event, 'methodo')">Méthodologie</button>
+                </div>
+
+                <div id="intro" class="tab-content active">
+                    <h3>📚 Les deux types d'énergie mécanique</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                        <div style="background: #e7f3ff; padding: 20px; border-radius: 10px;">
+                            <h4 style="color: #007bff;">📘 Énergie Cinétique (E<sub>c</sub>)</h4>
+                            <p><strong>Énergie du mouvement</strong></p>
+                            <p>Dépend de la vitesse et de la masse</p>
+                            <div class="formula" style="margin-top: 10px;">E<sub>c</sub> = ½ m v²</div>
+                        </div>
+                        
+                        <div style="background: #d4edda; padding: 20px; border-radius: 10px;">
+                            <h4 style="color: #28a745;">📗 Énergie Potentielle (E<sub>pp</sub>)</h4>
+                            <p><strong>Énergie de position</strong></p>
+                            <p>Dépend de l'altitude et de la masse</p>
+                            <div class="formula" style="margin-top: 10px;">E<sub>pp</sub> = m g h</div>
+                        </div>
+                    </div>
+
+                    <h3>🔄 Principe fondamental</h3>
+                    <div class="success-box">
+                        <p style="font-size: 1.1em; text-align: center;">
+                            <strong>E<sub>m</sub> = E<sub>c</sub> + E<sub>pp</sub></strong>
+                        </p>
+                        <p style="text-align: center; margin-top: 10px;">
+                            L'énergie peut se transformer mais ne disparaît jamais !
+                        </p>
+                    </div>
+
+                    <h3>✅ Unités à connaître</h3>
+                    <ul>
+                        <li><strong>Énergie :</strong> Joule (J)</li>
+                        <li><strong>Masse :</strong> Kilogramme (kg)</li>
+                        <li><strong>Vitesse :</strong> Mètre par seconde (m/s)</li>
+                        <li><strong>Distance :</strong> Mètre (m)</li>
+                        <li><strong>Force :</strong> Newton (N)</li>
+                        <li><strong>g :</strong> 9,8 m/s² ou 10 m/s² (approximation)</li>
+                    </ul>
+                </div>
+
+                <div id="formules" class="tab-content">
+                    <h3>📋 Formulaire Essentiel</h3>
+                    
+                    <h4 style="color: #667eea;">Énergies</h4>
+                    <div class="formula">E<sub>c</sub> = ½ m v²</div>
+                    <div class="formula">E<sub>pp</sub> = m g h</div>
+                    <div class="formula">E<sub>m</sub> = E<sub>c</sub> + E<sub>pp</sub></div>
+                    
+                    <h4 style="color: #667eea; margin-top: 20px;">Théorèmes</h4>
+                    <div class="formula">ΔE<sub>c</sub> = W(forces)</div>
+                    <div class="formula">E<sub>m</sub>(A) = E<sub>m</sub>(B) si conservatif</div>
+                    <div class="formula">ΔE<sub>m</sub> = W(forces non conservatives)</div>
+                    
+                    <h4 style="color: #667eea; margin-top: 20px;">Travail</h4>
+                    <div class="formula">W = F · d · cos(α)</div>
+                    <div class="formula">W(poids) = m g h</div>
+                    
+                    <h4 style="color: #667eea; margin-top: 20px;">Conversion vitesse</h4>
+                    <div class="formula">v(m/s) = v(km/h) ÷ 3,6</div>
+                    <div class="formula">v(km/h) = v(m/s) × 3,6</div>
+                </div>
+
+                <div id="methodo" class="tab-content">
+                    <h3>🎯 Méthodologie de Résolution</h3>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #667eea;">Étape 1 : SCHÉMA</h4>
+                        <p>✓ Dessiner les états A (initial) et B (final)<br>
+                        ✓ Indiquer h, v, forces</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #667eea;">Étape 2 : RÉFÉRENCE</h4>
+                        <p>✓ Choisir h = 0 (souvent le point le plus bas)<br>
+                        ✓ Le noter clairement</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #667eea;">Étape 3 : FORCES</h4>
+                        <p>✓ Lister toutes les forces<br>
+                        ✓ Identifier : conservatives / non conservatives</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #667eea;">Étape 4 : PRINCIPE</h4>
+                        <p>✓ Pas de frottements → E<sub>m</sub>(A) = E<sub>m</sub>(B)<br>
+                        ✓ Avec frottements → ΔE<sub>m</sub> = W(f)</p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <h4 style="color: #667eea;">Étape 5 : CALCUL</h4>
+                        <p>✓ Appliquer les formules<br>
+                        ✓ Vérifier les unités (kg, m, m/s, J)<br>
+                        ✓ Vérifier la cohérence du résultat</p>
+                    </div>
+                </div>
+            `,
+            
+            'ec-definition': `
+                <h2 style="color: #007bff;">📘 Énergie Cinétique</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'ec-def')">Définition</button>
+                    <button class="tab" onclick="switchTab(event, 'ec-caract')">Caractéristiques</button>
+                    <button class="tab" onclick="switchTab(event, 'ec-exemples')">Exemples</button>
+                </div>
+
+                <div id="ec-def" class="tab-content active">
+                    <h3>🎯 Définition</h3>
+                    <p style="font-size: 1.1em; line-height: 1.6;">
+                        <strong>L'énergie cinétique</strong> est l'énergie que possède un objet du fait de son <strong>mouvement</strong>.
+                    </p>
+                    
+                    <h3 style="margin-top: 20px;">Formule fondamentale</h3>
+                    <div class="formula" style="font-size: 1.5em;">E<sub>c</sub> = ½ m v²</div>
+                    
+                    <ul class="info-list" style="margin-top: 20px;">
+                        <li><strong>E<sub>c</sub></strong> : énergie cinétique (en joules, J)</li>
+                        <li><strong>m</strong> : masse de l'objet (en kilogrammes, kg)</li>
+                        <li><strong>v</strong> : vitesse de l'objet (en mètres par seconde, m/s)</li>
+                    </ul>
+
+                    <div class="warning-box" style="margin-top: 20px;">
+                        <h4>⚠️ Point critique</h4>
+                        <p><strong>N'OUBLIEZ JAMAIS le facteur ½ !</strong></p>
+                        <p>C'est l'erreur la plus fréquente en DS.</p>
+                    </div>
+                </div>
+
+                <div id="ec-caract" class="tab-content">
+                    <h3>📊 Caractéristiques importantes</h3>
+                    
+                    <table class="conversion-table">
+                        <tr>
+                            <th>Propriété</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Scalaire</strong></td>
+                            <td>E<sub>c</sub> est toujours <strong>positive ou nulle</strong> (jamais négative)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dépendance à v²</strong></td>
+                            <td>Si v double, E<sub>c</sub> est multipliée par <strong>4</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dépendance à m</strong></td>
+                            <td>Si m double, E<sub>c</sub> double</td>
+                        </tr>
+                        <tr>
+                            <td><strong>E<sub>c</sub> = 0</strong></td>
+                            <td>Lorsque l'objet est <strong>immobile</strong> (v = 0)</td>
+                        </tr>
+                    </table>
+
+                    <div class="example-box" style="margin-top: 20px;">
+                        <h4>💡 Exemple concret</h4>
+                        <p><strong>Voiture à 20 m/s vs 40 m/s :</strong></p>
+                        <p>• À 20 m/s : E<sub>c</sub> = ½ m × 20² = 200m J</p>
+                        <p>• À 40 m/s : E<sub>c</sub> = ½ m × 40² = 800m J</p>
+                        <p><strong>→ Vitesse × 2 = Énergie × 4 !</strong></p>
+                        <p style="margin-top: 10px; color: #856404;">
+                            C'est pourquoi la vitesse est si dangereuse : l'énergie à dissiper lors d'un freinage augmente très rapidement !
+                        </p>
+                    </div>
+                </div>
+
+                <div id="ec-exemples" class="tab-content">
+                    <h3>📝 Exemples d'Application</h3>
+                    
+                    <div class="example-box">
+                        <h4>Exemple 1 : Calcul d'énergie cinétique</h4>
+                        <p><strong>Énoncé :</strong> Une voiture de masse m = 1200 kg roule à v = 90 km/h. Calculer son énergie cinétique.</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Solution :</strong></p>
+                        <p>1️⃣ Convertir : v = 90 km/h = 90 ÷ 3,6 = 25 m/s</p>
+                        <p>2️⃣ Appliquer : E<sub>c</sub> = ½ × 1200 × 25²</p>
+                        <p style="margin-left: 40px;">E<sub>c</sub> = ½ × 1200 × 625</p>
+                        <p style="margin-left: 40px;">E<sub>c</sub> = 600 × 625</p>
+                        <p><strong style="color: #28a745;">→ E<sub>c</sub> = 375 000 J = 375 kJ</strong></p>
+                    </div>
+
+                    <div class="example-box">
+                        <h4>Exemple 2 : Freinage</h4>
+                        <p><strong>Énoncé :</strong> Une voiture (m = 1000 kg) roule à 20 m/s. La force de freinage est F = 5000 N. Quelle distance de freinage ?</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Solution :</strong></p>
+                        <p>1️⃣ E<sub>c</sub>(initiale) = ½ × 1000 × 20² = 200 000 J</p>
+                        <p>2️⃣ E<sub>c</sub>(finale) = 0 J (arrêt)</p>
+                        <p>3️⃣ ΔE<sub>c</sub> = -200 000 J</p>
+                        <p>4️⃣ TEC : W(freinage) = -F × d = -5000 × d = -200 000</p>
+                        <p>5️⃣ d = 200 000 ÷ 5000</p>
+                        <p><strong style="color: #28a745;">→ d = 40 m</strong></p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>🧮 Conversions Vitesse</h4>
+                        <p><strong>km/h → m/s :</strong> diviser par 3,6</p>
+                        <p><strong>m/s → km/h :</strong> multiplier par 3,6</p>
+                        <p style="margin-top: 10px;"><strong>À mémoriser :</strong></p>
+                        <p>• 36 km/h = 10 m/s</p>
+                        <p>• 72 km/h = 20 m/s</p>
+                        <p>• 90 km/h = 25 m/s</p>
+                        <p>• 108 km/h = 30 m/s</p>
+                    </div>
+                </div>
+            `,
+            
+            'tec': `
+                <h2 style="color: #667eea;">🔧 Théorème de l'Énergie Cinétique (TEC)</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'tec-enonce')">Énoncé</button>
+                    <button class="tab" onclick="switchTab(event, 'tec-appli')">Applications</button>
+                    <button class="tab" onclick="switchTab(event, 'tec-exemple')">Exemple</button>
+                </div>
+
+                <div id="tec-enonce" class="tab-content active">
+                    <h3>📜 Énoncé du TEC</h3>
+                    <p style="font-size: 1.1em; line-height: 1.6;">
+                        La <strong>variation d'énergie cinétique</strong> d'un système entre deux positions A et B est égale à la <strong>somme des travaux</strong> de toutes les forces qui s'exercent sur lui.
+                    </p>
+                    
+                    <h3 style="margin-top: 20px;">Formule</h3>
+                    <div class="formula" style="font-size: 1.5em;">ΔE<sub>c</sub> = E<sub>c</sub>(B) - E<sub>c</sub>(A) = W(A→B)(forces)</div>
+                    
+                    <p style="margin-top: 20px; text-align: center;">ou encore :</p>
+                    <div class="formula">½mv²(B) - ½mv²(A) = ΣW(forces)</div>
+
+                    <div class="success-box" style="margin-top: 20px;">
+                        <h4>💡 Interprétation</h4>
+                        <p>• Si W > 0 (travail moteur) → E<sub>c</sub> augmente → <strong>accélération</strong></p>
+                        <p>• Si W < 0 (travail résistant) → E<sub>c</sub> diminue → <strong>freinage</strong></p>
+                        <p>• Si W = 0 → E<sub>c</sub> constante → <strong>vitesse constante</strong></p>
+                    </div>
+                </div>
+
+                <div id="tec-appli" class="tab-content">
+                    <h3>🎯 Applications du TEC</h3>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: #e7f3ff; padding: 15px; border-radius: 10px;">
+                            <h4 style="color: #007bff;">1️⃣ Calculer la vitesse finale</h4>
+                            <p>Connaissant les forces et la vitesse initiale</p>
+                            <p><strong>Exemple :</strong> Vitesse d'une voiture après accélération</p>
+                        </div>
+                        
+                        <div style="background: #e7f3ff; padding: 15px; border-radius: 10px;">
+                            <h4 style="color: #007bff;">2️⃣ Calculer le travail d'une force</h4>
+                            <p>Connaissant les vitesses initiale et finale</p>
+                            <p><strong>Exemple :</strong> Travail du moteur d'une voiture</p>
+                        </div>
+                        
+                        <div style="background: #e7f3ff; padding: 15px; border-radius: 10px;">
+                            <h4 style="color: #007bff;">3️⃣ Déterminer la distance de freinage</h4>
+                            <p>Connaissant la force de freinage</p>
+                            <p><strong>Exemple :</strong> Sécurité routière</p>
+                        </div>
+                        
+                        <div style="background: #e7f3ff; padding: 15px; border-radius: 10px;">
+                            <h4 style="color: #007bff;">4️⃣ Analyser l'accélération/ralentissement</h4>
+                            <p>Étudier le mouvement d'un objet</p>
+                            <p><strong>Exemple :</strong> Décollage d'un avion, freinage d'urgence</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tec-exemple" class="tab-content">
+                    <h3>📝 Exemple Détaillé</h3>
+                    
+                    <div class="example-box">
+                        <h4>Application du TEC</h4>
+                        <p><strong>Énoncé :</strong> Un skieur de masse m = 80 kg part du repos et atteint v = 15 m/s. Quel est le travail total des forces ?</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Solution :</strong></p>
+                        
+                        <p><strong>État initial (A) :</strong></p>
+                        <p>• v₀ = 0 m/s (part du repos)</p>
+                        <p>• E<sub>c</sub>₀ = ½ × 80 × 0² = 0 J</p>
+                        
+                        <p style="margin-top: 15px;"><strong>État final (B) :</strong></p>
+                        <p>• v = 15 m/s</p>
+                        <p>• E<sub>c</sub> = ½ × 80 × 15²</p>
+                        <p>• E<sub>c</sub> = 40 × 225</p>
+                        <p>• E<sub>c</sub> = 9000 J</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Application du TEC :</strong></p>
+                        <p>W(total) = ΔE<sub>c</sub> = E<sub>c</sub>(B) - E<sub>c</sub>(A)</p>
+                        <p>W(total) = 9000 - 0</p>
+                        <p><strong style="color: #28a745; font-size: 1.2em;">→ W(total) = 9000 J = 9 kJ</strong></p>
+                        
+                        <div style="background: #d4edda; padding: 10px; border-radius: 5px; margin-top: 15px;">
+                            <p><strong>Interprétation :</strong></p>
+                            <p>Le travail est positif, donc les forces ont fourni de l'énergie au skieur (probablement le poids lors d'une descente).</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            
+            'travail': `
+                <h2 style="color: #764ba2;">💼 Travail d'une Force</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'w-def')">Définition</button>
+                    <button class="tab" onclick="switchTab(event, 'w-cas')">Cas Particuliers</button>
+                    <button class="tab" onclick="switchTab(event, 'w-exemples')">Exemples Forces</button>
+                </div>
+
+                <div id="w-def" class="tab-content active">
+                    <h3>📐 Définition</h3>
+                    <p style="font-size: 1.1em;">
+                        Le <strong>travail</strong> d'une force constante <strong>F</strong> lors d'un déplacement <strong>AB</strong> est :
+                    </p>
+                    
+                    <div class="formula" style="font-size: 1.5em;">W = F · d · cos(α)</div>
+                    
+                    <ul class="info-list" style="margin-top: 20px;">
+                        <li><strong>W</strong> : travail de la force (en joules, J)</li>
+                        <li><strong>F</strong> : intensité de la force (en newtons, N)</li>
+                        <li><strong>d</strong> : distance parcourue (en mètres, m)</li>
+                        <li><strong>α</strong> : angle entre la force et le déplacement</li>
+                    </ul>
+
+                    <div class="success-box" style="margin-top: 20px;">
+                        <h4>💡 Remarque importante</h4>
+                        <p>Le travail dépend de l'<strong>angle</strong> entre la force et le déplacement !</p>
+                        <p>Une force peut ne pas travailler même si l'objet se déplace (α = 90°).</p>
+                    </div>
+                </div>
+
+                <div id="w-cas" class="tab-content">
+                    <h3>🎯 Cas Particuliers</h3>
+                    
+                    <table class="conversion-table">
+                        <thead>
+                            <tr>
+                                <th>Situation</th>
+                                <th>Angle α</th>
+                                <th>cos(α)</th>
+                                <th>Travail</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Force dans le sens du mouvement</td>
+                                <td>0°</td>
+                                <td>+1</td>
+                                <td>W = F·d</td>
+                                <td><strong style="color: #28a745;">Moteur ✅</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Force perpendiculaire au mouvement</td>
+                                <td>90°</td>
+                                <td>0</td>
+                                <td>W = 0</td>
+                                <td><strong style="color: #6c757d;">Nul ⚪</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Force opposée au mouvement</td>
+                                <td>180°</td>
+                                <td>-1</td>
+                                <td>W = -F·d</td>
+                                <td><strong style="color: #dc3545;">Résistant ❌</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                        <h4 style="color: #667eea;">Exemples visuels</h4>
+                        <p><strong>✅ Travail MOTEUR (W > 0) :</strong></p>
+                        <p>→→→ F</p>
+                        <p>→→→ déplacement</p>
+                        <p style="margin-top: 10px;">La force aide le mouvement (ex: poids lors d'une descente)</p>
+                        
+                        <p style="margin-top: 20px;"><strong>⚪ Travail NUL (W = 0) :</strong></p>
+                        <p>↑ F</p>
+                        <p>→→→ déplacement</p>
+                        <p style="margin-top: 10px;">La force est perpendiculaire (ex: réaction normale)</p>
+                        
+                        <p style="margin-top: 20px;"><strong>❌ Travail RÉSISTANT (W < 0) :</strong></p>
+                        <p>←←← F</p>
+                        <p>→→→ déplacement</p>
+                        <p style="margin-top: 10px;">La force s'oppose au mouvement (ex: frottements)</p>
+                    </div>
+                </div>
+
+                <div id="w-exemples" class="tab-content">
+                    <h3>🔍 Exemples de Forces</h3>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        <div class="example-box">
+                            <h4>1️⃣ Travail du POIDS</h4>
+                            <div class="formula">W(P) = m · g · h</div>
+                            <p><strong>Cas 1 - Descente (h < 0) :</strong></p>
+                            <p>• h est négatif → W > 0</p>
+                            <p>• Le poids est <strong style="color: #28a745;">moteur</strong></p>
+                            <p>• Il favorise la descente</p>
+                            
+                            <p style="margin-top: 10px;"><strong>Cas 2 - Montée (h > 0) :</strong></p>
+                            <p>• h est positif → W < 0</p>
+                            <p>• Le poids est <strong style="color: #dc3545;">résistant</strong></p>
+                            <p>• Il s'oppose à la montée</p>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h4>2️⃣ Travail des FROTTEMENTS</h4>
+                            <p>• Toujours <strong style="color: #dc3545;">résistants</strong></p>
+                            <p>• W < 0 dans tous les cas</p>
+                            <p>• Dissipation d'énergie en chaleur</p>
+                            <div class="formula">W(f) = -f · d</div>
+                            <p style="margin-top: 10px; color: #856404;">
+                                ⚠️ Attention au signe moins !
+                            </p>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h4>3️⃣ Travail de la RÉACTION NORMALE</h4>
+                            <p>• Toujours perpendiculaire au déplacement</p>
+                            <p>• α = 90° donc cos(90°) = 0</p>
+                            <p>• W = 0 (travail nul)</p>
+                            <div class="formula">W(R<sub>N</sub>) = 0</div>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h4>4️⃣ Travail d'un MOTEUR</h4>
+                            <p>• Force dans le sens du mouvement</p>
+                            <p>• W > 0 (travail moteur)</p>
+                            <p>• Fourniture d'énergie au système</p>
+                            <div class="formula">W(moteur) = F · d</div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            
+            'em-definition': `
+                <h2 style="color: #28a745;">📗 Énergie Mécanique</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'em-def')">Définition</button>
+                    <button class="tab" onclick="switchTab(event, 'epp')">Énergie Potentielle</button>
+                    <button class="tab" onclick="switchTab(event, 'conversions')">Conversions</button>
+                </div>
+
+                <div id="em-def" class="tab-content active">
+                    <h3>🎯 Définition</h3>
+                    <p style="font-size: 1.1em; line-height: 1.6;">
+                        <strong>L'énergie mécanique</strong> est la somme de l'énergie cinétique et de l'énergie potentielle d'un système.
+                    </p>
+                    
+                    <div class="formula" style="font-size: 1.5em;">E<sub>m</sub> = E<sub>c</sub> + E<sub>pp</sub></div>
+                    
+                    <ul class="info-list" style="margin-top: 20px;">
+                        <li><strong>E<sub>m</sub></strong> : énergie mécanique (en J)</li>
+                        <li><strong>E<sub>c</sub></strong> : énergie cinétique = ½mv² (en J)</li>
+                        <li><strong>E<sub>pp</sub></strong> : énergie potentielle de pesanteur = mgh (en J)</li>
+                    </ul>
+
+                    <div class="success-box" style="margin-top: 20px;">
+                        <h4>💡 Principe fondamental</h4>
+                        <p style="font-size: 1.1em;">
+                            L'énergie mécanique représente la <strong>capacité totale</strong> d'un système à effectuer un travail, que ce soit par son mouvement (E<sub>c</sub>) ou par sa position (E<sub>pp</sub>).
+                        </p>
+                    </div>
+
+                    <div style="background: #e7f3ff; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <h4 style="color: #007bff;">Forme développée</h4>
+                        <div class="formula">E<sub>m</sub> = ½mv² + mgh</div>
+                        <p style="margin-top: 10px; text-align: center;">
+                            Énergie du mouvement + Énergie de position
+                        </p>
+                    </div>
+                </div>
+
+                <div id="epp" class="tab-content">
+                    <h3>📊 Énergie Potentielle de Pesanteur</h3>
+                    
+                    <p style="font-size: 1.1em;">
+                        L'<strong>énergie potentielle de pesanteur</strong> est l'énergie que possède un objet du fait de sa position dans un champ de pesanteur.
+                    </p>
+                    
+                    <div class="formula" style="font-size: 1.5em; margin: 20px 0;">E<sub>pp</sub> = m g h</div>
+                    
+                    <ul class="info-list">
+                        <li><strong>m</strong> : masse (en kg)</li>
+                        <li><strong>g</strong> : intensité de la pesanteur ≈ 9,8 m/s² (ou 10 m/s² en approximation)</li>
+                        <li><strong>h</strong> : altitude par rapport à un niveau de référence (en m)</li>
+                    </ul>
+
+                    <h4 style="color: #667eea; margin-top: 20px;">Caractéristiques importantes</h4>
+                    <table class="conversion-table">
+                        <tr>
+                            <th>Propriété</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Niveau de référence</strong></td>
+                            <td>On choisit librement où h = 0 (sol, point le plus bas...)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Signe</strong></td>
+                            <td>E<sub>pp</sub> > 0 si au-dessus, E<sub>pp</sub> < 0 si en-dessous</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Variation</strong></td>
+                            <td>ΔE<sub>pp</sub> = mg(h₂ - h₁) = mgΔh</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dépendance</strong></td>
+                            <td>Proportionnelle à m, g et h</td>
+                        </tr>
+                    </table>
+
+                    <div class="warning-box" style="margin-top: 20px;">
+                        <h4>⚠️ Point crucial</h4>
+                        <p><strong>Toujours choisir et noter le niveau de référence !</strong></p>
+                        <p>C'est par rapport à ce niveau que h sera mesuré.</p>
+                        <p>Généralement, on choisit le point le plus bas du mouvement.</p>
+                    </div>
+                </div>
+
+                <div id="conversions" class="tab-content">
+                    <h3>🔄 Conversions d'Énergie</h3>
+                    
+                    <p style="font-size: 1.1em; margin-bottom: 20px;">
+                        Dans un système mécanique, l'énergie peut se <strong>convertir</strong> entre E<sub>c</sub> et E<sub>pp</sub>.
+                    </p>
+
+                    <table class="conversion-table">
+                        <thead>
+                            <tr>
+                                <th>Système</th>
+                                <th>Conversion</th>
+                                <th>E<sub>m</sub> conservée ?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Chute libre</strong></td>
+                                <td>E<sub>pp</sub> → E<sub>c</sub></td>
+                                <td style="color: #28a745;">✅ Oui (pas de frottements)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pendule idéal</strong></td>
+                                <td>E<sub>c</sub> ⇄ E<sub>pp</sub></td>
+                                <td style="color: #28a745;">✅ Oui</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Toboggan sans frottements</strong></td>
+                                <td>E<sub>pp</sub> → E<sub>c</sub></td>
+                                <td style="color: #28a745;">✅ Oui</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Parachutiste</strong></td>
+                                <td>E<sub>pp</sub> → E<sub>c</sub> → Chaleur</td>
+                                <td style="color: #dc3545;">❌ Non (résistance air)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Voiture qui freine</strong></td>
+                                <td>E<sub>c</sub> → Chaleur</td>
+                                <td style="color: #dc3545;">❌ Non (frottements)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Remontée mécanique</strong></td>
+                                <td>Énergie moteur → E<sub>pp</sub></td>
+                                <td style="color: #dc3545;">❌ Non (force motrice)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="example-box" style="margin-top: 20px;">
+                        <h4>💡 Exemple : Le Pendule</h4>
+                        <p><strong>Point le plus haut :</strong></p>
+                        <p>• Vitesse minimale → E<sub>c</sub> faible</p>
+                        <p>• Altitude maximale → E<sub>pp</sub> maximale</p>
+                        <p>• E<sub>m</sub> = E<sub>pp</sub> (principalement)</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Point le plus bas :</strong></p>
+                        <p>• Vitesse maximale → E<sub>c</sub> maximale</p>
+                        <p>• Altitude minimale → E<sub>pp</sub> faible</p>
+                        <p>• E<sub>m</sub> = E<sub>c</sub> (principalement)</p>
+                        
+                        <p style="margin-top: 15px; color: #28a745; font-weight: bold;">
+                            → E<sub>m</sub> reste constante : il y a conversion entre E<sub>c</sub> et E<sub>pp</sub> !
+                        </p>
+                    </div>
+                </div>
+            `,
+            
+            'conservation': `
+                <h2 style="color: #28a745;">⚖️ Conservation de l'Énergie Mécanique</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'conserv-def')">Principe</button>
+                    <button class="tab" onclick="switchTab(event, 'conserv-appli')">Applications</button>
+                    <button class="tab" onclick="switchTab(event, 'conserv-ex')">Exemple</button>
+                </div>
+
+                <div id="conserv-def" class="tab-content active">
+                    <h3>🟢 Principe de Conservation</h3>
+                    
+                    <div class="success-box">
+                        <h4>Condition de conservation</h4>
+                        <p style="font-size: 1.1em;">
+                            <strong>Si seules des forces conservatives agissent</strong> (pas de frottements, pas de résistance de l'air) :
+                        </p>
+                        <div class="formula" style="font-size: 1.3em; margin-top: 15px;">
+                            E<sub>m</sub> = constante
+                        </div>
+                        <div class="formula" style="font-size: 1.3em;">
+                            E<sub>m</sub>(A) = E<sub>m</sub>(B)
+                        </div>
+                        <div class="formula" style="font-size: 1.3em;">
+                            E<sub>c</sub>(A) + E<sub>pp</sub>(A) = E<sub>c</sub>(B) + E<sub>pp</sub>(B)
+                        </div>
+                    </div>
+
+                    <h4 style="color: #667eea; margin-top: 30px;">Forces conservatives</h4>
+                    <ul class="info-list">
+                        <li>✅ <strong>Poids</strong> (force de gravité)</li>
+                        <li>✅ <strong>Force électrostatique</strong></li>
+                        <li>✅ <strong>Force élastique</strong> (ressort)</li>
+                    </ul>
+
+                    <div style="background: #e7f3ff; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                        <h4 style="color: #007bff;">Interprétation physique</h4>
+                        <p>Dans un système conservatif :</p>
+                        <p>• L'énergie se <strong>transforme</strong> (E<sub>c</sub> ⇄ E<sub>pp</sub>)</p>
+                        <p>• Mais la <strong>somme totale</strong> reste constante</p>
+                        <p>• Aucune énergie n'est perdue ou créée</p>
+                        <p>• C'est le principe de <strong>conservation de l'énergie</strong></p>
+                    </div>
+
+                    <div class="warning-box" style="margin-top: 20px;">
+                        <h4>⚠️ Attention</h4>
+                        <p>Ne pas confondre :</p>
+                        <p><strong>"E<sub>m</sub> se conserve"</strong> ≠ <strong>"E<sub>c</sub> se conserve"</strong></p>
+                        <p style="margin-top: 10px;">
+                            E<sub>c</sub> peut varier même si E<sub>m</sub> est constante !<br>
+                            Il y a simplement conversion E<sub>c</sub> ⇄ E<sub>pp</sub>.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="conserv-appli" class="tab-content">
+                    <h3>🎯 Situations typiques</h3>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        <div class="example-box">
+                            <h4>1️⃣ Chute libre</h4>
+                            <p><strong>Situation :</strong> Un objet tombe sans frottements</p>
+                            <p><strong>Forces :</strong> Poids uniquement (conservative)</p>
+                            <p><strong>Conservation :</strong> ✅ E<sub>m</sub>(haut) = E<sub>m</sub>(bas)</p>
+                            <p><strong>Conversion :</strong> E<sub>pp</sub> → E<sub>c</sub></p>
+                            <p style="margin-top: 10px; color: #28a745;">
+                                → Au fur et à mesure de la chute, l'objet perd de l'altitude (E<sub>pp</sub> ↓) mais gagne en vitesse (E<sub>c</sub> ↑)
+                            </p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>2️⃣ Pendule sans frottements</h4>
+                            <p><strong>Situation :</strong> Un pendule oscille librement</p>
+                            <p><strong>Forces :</strong> Poids + Tension (toutes deux conservatives ou perpendiculaires)</p>
+                            <p><strong>Conservation :</strong> ✅ E<sub>m</sub> = constante</p>
+                            <p><strong>Conversion :</strong> E<sub>c</sub> ⇄ E<sub>pp</sub> (va-et-vient)</p>
+                            <p style="margin-top: 10px; color: #28a745;">
+                                → Oscillation perpétuelle en théorie (en pratique, les frottements de l'air finissent par l'arrêter)
+                            </p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>3️⃣ Toboggan sans frottements</h4>
+                            <p><strong>Situation :</strong> Un objet glisse sur une pente lisse</p>
+                            <p><strong>Forces :</strong> Poids (conservative) + Réaction normale (perpendiculaire, W = 0)</p>
+                            <p><strong>Conservation :</strong> ✅ E<sub>m</sub>(haut) = E<sub>m</sub>(bas)</p>
+                            <p><strong>Conversion :</strong> E<sub>pp</sub> → E<sub>c</sub></p>
+                            <p style="margin-top: 10px; color: #28a745;">
+                                → Même vitesse finale qu'en chute libre de la même hauteur !
+                            </p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>4️⃣ Satellite en orbite</h4>
+                            <p><strong>Situation :</strong> Un satellite tourne autour de la Terre</p>
+                            <p><strong>Forces :</strong> Force gravitationnelle (conservative)</p>
+                            <p><strong>Conservation :</strong> ✅ E<sub>m</sub> = constante</p>
+                            <p><strong>Conversion :</strong> E<sub>c</sub> ⇄ E<sub>pp</sub> si orbite elliptique</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="conserv-ex" class="tab-content">
+                    <h3>📝 Exemple Complet</h3>
+                    
+                    <div class="example-box">
+                        <h4>Chute libre - Calcul de vitesse</h4>
+                        <p><strong>Énoncé :</strong> Une bille de masse m = 0,5 kg tombe d'une hauteur h = 5 m sans frottements. Quelle est sa vitesse au sol ?</p>
+                        
+                        <p style="margin-top: 20px;"><strong>Données :</strong></p>
+                        <p>• m = 0,5 kg</p>
+                        <p>• h = 5 m</p>
+                        <p>• g = 10 m/s²</p>
+                        <p>• Pas de frottements → conservation de E<sub>m</sub></p>
+                        
+                        <p style="margin-top: 20px;"><strong>Choix de la référence :</strong></p>
+                        <p>Niveau de référence (h = 0) : le sol</p>
+                        
+                        <p style="margin-top: 20px;"><strong>État A (en haut) :</strong></p>
+                        <p>• h(A) = 5 m</p>
+                        <p>• v(A) = 0 m/s (part du repos)</p>
+                        <p>• E<sub>c</sub>(A) = ½ × 0,5 × 0² = 0 J</p>
+                        <p>• E<sub>pp</sub>(A) = 0,5 × 10 × 5 = 25 J</p>
+                        <p>• E<sub>m</sub>(A) = 0 + 25 = <strong>25 J</strong></p>
+                        
+                        <p style="margin-top: 20px;"><strong>État B (au sol) :</strong></p>
+                        <p>• h(B) = 0 m</p>
+                        <p>• v(B) = ? (à trouver)</p>
+                        <p>• E<sub>c</sub>(B) = ½ × 0,5 × v²</p>
+                        <p>• E<sub>pp</sub>(B) = 0,5 × 10 × 0 = 0 J</p>
+                        <p>• E<sub>m</sub>(B) = ½ × 0,5 × v² + 0 = <strong>0,25v²</strong></p>
+                        
+                        <p style="margin-top: 20px;"><strong>Conservation de E<sub>m</sub> :</strong></p>
+                        <div class="formula">E<sub>m</sub>(A) = E<sub>m</sub>(B)</div>
+                        <p>25 = 0,25v²</p>
+                        <p>v² = 25 ÷ 0,25</p>
+                        <p>v² = 100</p>
+                        <p><strong style="color: #28a745; font-size: 1.2em;">v = 10 m/s</strong></p>
+                        
+                        <div style="background: #d4edda; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                            <p><strong>Vérification :</strong></p>
+                            <p>E<sub>m</sub>(B) = ½ × 0,5 × 10² = 0,25 × 100 = 25 J ✓</p>
+                            <p>On retrouve bien E<sub>m</sub>(A) = E<sub>m</sub>(B) = 25 J</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            
+            'variation': `
+                <h2 style="color: #dc3545;">🔴 Variation de l'Énergie Mécanique</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab(event, 'var-def')">Principe</button>
+                    <button class="tab" onclick="switchTab(event, 'var-forces')">Forces non conservatives</button>
+                    <button class="tab" onclick="switchTab(event, 'var-ex')">Exemple</button>
+                </div>
+
+                <div id="var-def" class="tab-content active">
+                    <h3>🔴 Cas de variation</h3>
+                    
+                    <div class="warning-box">
+                        <h4>Condition de variation</h4>
+                        <p style="font-size: 1.1em;">
+                            <strong>Si des forces non conservatives agissent</strong> (frottements, résistance de l'air, forces motrices) :
+                        </p>
+                        <div class="formula" style="font-size: 1.3em; margin-top: 15px;">
+                            ΔE<sub>m</sub> = E<sub>m</sub>(B) - E<sub>m</sub>(A) = W(forces non conservatives)
+                        </div>
+                    </div>
+
+                    <h4 style="color: #667eea; margin-top: 30px;">Forces non conservatives</h4>
+                    <ul class="info-list">
+                        <li>❌ <strong>Frottements</strong> (solide-solide)</li>
+                        <li>❌ <strong>Résistance de l'air</strong></li>
+                        <li>❌ <strong>Forces de traction</strong> (corde, câble)</li>
+                        <li>❌ <strong>Forces musculaires</strong></li>
+                        <li>❌ <strong>Forces motrices</strong> (moteur)</li>
+                    </ul>
+
+                    <h4 style="color: #667eea; margin-top: 30px;">Analyse du signe</h4>
+                    
+                    <div style="display: grid; gap: 15px; margin-top: 15px;">
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                            <p><strong>W < 0</strong> (frottements, résistance) :</p>
+                            <p>• ΔE<sub>m</sub> < 0</p>
+                            <p>• <strong style="color: #dc3545;">Perte d'énergie mécanique</strong></p>
+                            <p>• Dissipation en chaleur</p>
+                            <p>• E<sub>m</sub> diminue au cours du temps</p>
+                        </div>
+                        
+                        <div style="background: #d4edda; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745;">
+                            <p><strong>W > 0</strong> (moteur, traction) :</p>
+                            <p>• ΔE<sub>m</sub> > 0</p>
+                            <p>• <strong style="color: #28a745;">Gain d'énergie mécanique</strong></p>
+                            <p>• Apport d'énergie externe</p>
+                            <p>• E<sub>m</sub> augmente</p>
+                        </div>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 20px;">
+                        <h4>💡 Interprétation physique</h4>
+                        <p>Quand il y a des frottements :</p>
+                        <p>1. L'énergie mécanique n'est plus conservée</p>
+                        <p>2. Elle se transforme en <strong>chaleur</strong></p>
+                        <p>3. Cette énergie thermique n'est plus récupérable mécaniquement</p>
+                        <p>4. C'est pourquoi un pendule réel finit par s'arrêter</p>
+                    </div>
+                </div>
+
+                <div id="var-forces" class="tab-content">
+                    <h3>🎯 Exemples de situations</h3>
+                    
+                    <div style="display: grid; gap: 15px;">
+                        <div class="example-box">
+                            <h4>1️⃣ Parachutiste en chute</h4>
+                            <p><strong>Forces :</strong></p>
+                            <p>• Poids (conservative)</p>
+                            <p>• Résistance de l'air (NON conservative)</p>
+                            
+                            <p style="margin-top: 10px;"><strong>Analyse :</strong></p>
+                            <p>• W(résistance) < 0</p>
+                            <p>• ΔE<sub>m</sub> < 0</p>
+                            <p>• Perte d'énergie mécanique</p>
+                            
+                            <p style="margin-top: 10px; color: #dc3545;">
+                                → L'énergie potentielle se transforme en chaleur (échauffement de l'air) plutôt qu'en énergie cinétique
+                            </p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>2️⃣ Voiture qui freine</h4>
+                            <p><strong>Forces :</strong></p>
+                            <p>• Frottements des freins (NON conservative)</p>
+                            
+                            <p style="margin-top: 10px;"><strong>Analyse :</strong></p>
+                            <p>• W(freinage) < 0</p>
+                            <p>• ΔE<sub>m</sub> = ΔE<sub>c</sub> < 0 (pas de variation de hauteur)</p>
+                            <p>• Toute l'énergie cinétique se transforme en chaleur</p>
+                            
+                            <p style="margin-top: 10px; color: #dc3545;">
+                                → C'est pourquoi les freins chauffent après un freinage intense !
+                            </p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>3️⃣ Toboggan avec frottements</h4>
+                            <p><strong>Forces :</strong></p>
+                            <p>• Poids (conservative)</p>
+                            <p>• Réaction normale (W = 0)</p>
+                            <p>• Frottements (NON conservative)</p>
+                            
+                            <p style="margin-top: 10px;"><strong>Analyse :</strong></p>
+                            <p>• W(frottements) < 0</p>
+                            <p>• ΔE<sub>m</sub> < 0</p>
+                            <p>• Vitesse finale < vitesse en chute libre de même hauteur</p>
+                            
+                            <p style="margin-top: 10px; color: #dc3545;">
+                                → Une partie de E<sub>pp</sub> est perdue en chaleur au lieu de se convertir en E<sub>c</sub>
+                            </p>
+                        </div>
+
+                        <div class="example-box">
+                            <h4>4️⃣ Remontée mécanique</h4>
+                            <p><strong>Forces :</strong></p>
+                            <p>• Poids (conservative, résistante)</p>
+                            <p>• Force de traction (NON conservative, motrice)</p>
+                            
+                            <p style="margin-top: 10px;"><strong>Analyse :</strong></p>
+                            <p>• W(traction) > 0</p>
+                            <p>• ΔE<sub>m</sub> > 0</p>
+                            <p>• Gain d'énergie potentielle</p>
+                            
+                            <p style="margin-top: 10px; color: #28a745;">
+                                → Le moteur fournit de l'énergie pour augmenter E<sub>pp</sub>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="var-ex" class="tab-content">
+                    <h3>📝 Exemple Complet</h3>
+                    
+                    <div class="example-box">
+                        <h4>Toboggan avec frottements</h4>
+                        <p><strong>Énoncé :</strong> Un enfant de masse m = 40 kg glisse d'une hauteur h = 3 m sur un toboggan. Les frottements effectuent un travail W(f) = -600 J. Quelle est sa vitesse en bas ?</p>
+                        
+                        <p style="margin-top: 20px;"><strong>Données :</strong></p>
+                        <p>• m = 40 kg</p>
+                        <p>• h = 3 m</p>
+                        <p>• W(frottements) = -600 J</p>
+                        <p>• g = 10 m/s²</p>
+                        <p>• Part du repos : v(A) = 0</p>
+                        
+                        <p style="margin-top: 20px;"><strong>Choix de la référence :</strong></p>
+                        <p>Niveau de référence : le bas du toboggan (h = 0)</p>
+                        
+                        <p style="margin-top: 20px;"><strong>État A (en haut) :</strong></p>
+                        <p>• h(A) = 3 m</p>
+                        <p>• v(A) = 0 m/s</p>
+                        <p>• E<sub>c</sub>(A) = 0 J</p>
+                        <p>• E<sub>pp</sub>(A) = 40 × 10 × 3 = 1200 J</p>
+                        <p>• E<sub>m</sub>(A) = 0 + 1200 = <strong>1200 J</strong></p>
+                        
+                        <p style="margin-top: 20px;"><strong>État B (en bas) :</strong></p>
+                        <p>• h(B) = 0 m</p>
+                        <p>• v(B) = ? (à trouver)</p>
+                        <p>• E<sub>c</sub>(B) = ½ × 40 × v²</p>
+                        <p>• E<sub>pp</sub>(B) = 0 J</p>
+                        <p>• E<sub>m</sub>(B) = 20v²</p>
+                        
+                        <p style="margin-top: 20px;"><strong>Variation de E<sub>m</sub> :</strong></p>
+                        <div class="formula">ΔE<sub>m</sub> = W(frottements)</div>
+                        <p>E<sub>m</sub>(B) - E<sub>m</sub>(A) = -600</p>
+                        <p>E<sub>m</sub>(B) = 1200 - 600 = 600 J</p>
+                        
+                        <p style="margin-top: 15px;"><strong>Calcul de v :</strong></p>
+                        <p>E<sub>m</sub>(B) = E<sub>c</sub>(B) = 20v²</p>
+                        <p>20v² = 600</p>
+                        <p>v² = 30</p>
+                        <p><strong style="color: #28a745; font-size: 1.2em;">v ≈ 5,5 m/s</strong></p>
+                        
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                            <p><strong>Comparaison :</strong></p>
+                            <p>Sans frottements, on aurait eu :</p>
+                            <p>E<sub>m</sub>(B) = E<sub>m</sub>(A) = 1200 J</p>
+                            <p>20v² = 1200 → v ≈ 7,7 m/s</p>
+                            <p style="margin-top: 10px; color: #856404;">
+                                → Les frottements ont réduit la vitesse finale de 7,7 à 5,5 m/s !
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        function openModal(contentKey) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = modalContents[contentKey];
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function switchTab(event, tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = event.target.parentElement.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab and mark as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
