@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carte Mentale - Produit Scalaire (Première)</title>
+    
+    <!-- MathJax pour les formules LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -84,34 +97,20 @@
         }
 
         .branch-node:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.05);
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         .branch-node h3 {
             font-size: 1.1em;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             color: #333;
         }
 
-        .branch-content {
-            display: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #f0f0f0;
-            font-size: 0.9em;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .branch-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .branch-node p {
+            font-size: 0.85em;
+            color: #666;
+            margin: 0;
         }
 
         .branch-1 { top: 10%; left: 15%; }
@@ -132,23 +131,108 @@
         .branch-6 { top: 50%; left: 5%; }
         .branch-6 .branch-node { border-color: #a29bfe; }
 
+        /* Modal plein écran pour les branches */
+        .branch-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .branch-modal-overlay.active {
+            display: flex;
+        }
+
+        .branch-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .branch-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid;
+        }
+
+        .branch-modal-header h2 {
+            font-size: 2em;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .branch-modal-close {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .branch-modal-close:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .branch-modal-body {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: #333;
+        }
+
         .formula {
             background: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 8px 0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
             font-family: 'Courier New', monospace;
             font-weight: bold;
             text-align: center;
             color: #2d3436;
+            font-size: 1.2em;
         }
 
         .example {
             background: #e8f5e9;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 8px 0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
             font-style: italic;
+            border-left: 4px solid #4caf50;
         }
 
         .important {
@@ -156,13 +240,15 @@
             font-weight: bold;
         }
 
+        /* Supprimer l'ancien style des vecteurs - on utilise LaTeX maintenant */
+
         ul {
-            margin-left: 20px;
-            margin-top: 8px;
+            margin-left: 25px;
+            margin-top: 10px;
         }
 
         li {
-            margin: 5px 0;
+            margin: 8px 0;
         }
 
         .instructions {
@@ -172,25 +258,6 @@
             margin-bottom: 20px;
             text-align: center;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .vector {
-            font-weight: bold;
-            font-style: italic;
-            color: #2c3e50;
-            position: relative;
-            padding-right: 2px;
-        }
-
-        .vector::before {
-            content: '→';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.2em;
-            color: #e74c3c;
-            font-style: normal;
         }
 
         /* Modal Carte Globale */
@@ -358,7 +425,265 @@
         <h1>📐 Carte Mentale - Produit Scalaire</h1>
         
         <div class="instructions">
-            <strong>💡 Cliquez sur chaque section</strong> pour découvrir les détails des concepts
+            <strong>💡 Cliquez sur chaque section</strong> pour l'afficher en plein écran
+        </div>
+
+        <div class="mind-map">
+            <div class="central-node" onclick="openModal()">
+                PRODUIT<br>SCALAIRE<br>
+                <span style="font-size: 0.7em;">(Première)</span><br>
+                <span style="font-size: 0.5em; opacity: 0.9;">📋 Carte globale méthodes DS</span>
+            </div>
+
+            <div class="branches">
+                <!-- Branche 1: Définitions -->
+                <div class="branch branch-1">
+                    <div class="branch-node" onclick="openBranchModal('branch1')">
+                        <h3>📚 Définitions</h3>
+                        <p>3 définitions essentielles</p>
+                    </div>
+                </div>
+
+                <!-- Branche 2: Propriétés -->
+                <div class="branch branch-2">
+                    <div class="branch-node" onclick="openBranchModal('branch2')">
+                        <h3>⚙️ Propriétés</h3>
+                        <p>4 propriétés fondamentales</p>
+                    </div>
+                </div>
+
+                <!-- Branche 3: Orthogonalité -->
+                <div class="branch branch-3">
+                    <div class="branch-node" onclick="openBranchModal('branch3')">
+                        <h3>⊥ Orthogonalité</h3>
+                        <p>Tests et applications</p>
+                    </div>
+                </div>
+
+                <!-- Branche 4: Applications géométriques -->
+                <div class="branch branch-4">
+                    <div class="branch-node" onclick="openBranchModal('branch4')">
+                        <h3>📐 Applications Géométriques</h3>
+                        <p>Al-Kashi, médianes, hauteurs</p>
+                    </div>
+                </div>
+
+                <!-- Branche 5: Équations de cercle -->
+                <div class="branch branch-5">
+                    <div class="branch-node" onclick="openBranchModal('branch5')">
+                        <h3>⭕ Équations de Cercle</h3>
+                        <p>Cercle et tangentes</p>
+                    </div>
+                </div>
+
+                <!-- Branche 6: Calculs d'angles -->
+                <div class="branch branch-6">
+                    <div class="branch-node" onclick="openBranchModal('branch6')">
+                        <h3>📏 Calculs d'Angles</h3>
+                        <p>Formules et méthodes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 1: Définitions -->
+        <div class="branch-modal-overlay" id="branch1">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #ff6b6b;">
+                    <h2>📚 Définitions du Produit Scalaire</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch1')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <p><strong>Définition analytique :</strong></p>
+                    <div class="formula">
+                        $\vec{u} \cdot \vec{v} = xx' + yy'$
+                    </div>
+                    <p>Si $\vec{u}(x,y)$ et $\vec{v}(x',y')$</p>
+                    
+                    <p style="margin-top: 25px;"><strong>Définition géométrique :</strong></p>
+                    <div class="formula">
+                        $\vec{u} \cdot \vec{v} = \|\vec{u}\| \times \|\vec{v}\| \times \cos(\theta)$
+                    </div>
+                    <p>où $\theta$ est l'angle entre $\vec{u}$ et $\vec{v}$</p>
+                    
+                    <p style="margin-top: 25px;"><strong>Projection :</strong></p>
+                    <div class="formula">
+                        $\vec{u} \cdot \vec{v} = \|\vec{u}\| \times \text{proj}_{\vec{u}}(\vec{v})$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 2: Propriétés -->
+        <div class="branch-modal-overlay" id="branch2">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #4ecdc4;">
+                    <h2>⚙️ Propriétés du Produit Scalaire</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch2')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <p><strong class="important">Commutativité :</strong></p>
+                    <div class="formula">$\vec{u} \cdot \vec{v} = \vec{v} \cdot \vec{u}$</div>
+                    
+                    <p style="margin-top: 25px;"><strong class="important">Distributivité :</strong></p>
+                    <div class="formula">$\vec{u} \cdot (\vec{v} + \vec{w}) = \vec{u} \cdot \vec{v} + \vec{u} \cdot \vec{w}$</div>
+                    
+                    <p style="margin-top: 25px;"><strong class="important">Homogénéité :</strong></p>
+                    <div class="formula">$(k\vec{u}) \cdot \vec{v} = k(\vec{u} \cdot \vec{v})$</div>
+                    
+                    <p style="margin-top: 25px;"><strong class="important">Carré scalaire :</strong></p>
+                    <div class="formula">$\vec{u} \cdot \vec{u} = \|\vec{u}\|^2$</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 3: Orthogonalité -->
+        <div class="branch-modal-overlay" id="branch3">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #45b7d1;">
+                    <h2>⊥ Orthogonalité</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch3')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <p><strong>Vecteurs orthogonaux :</strong></p>
+                    <div class="formula">
+                        $\vec{u} \perp \vec{v} \Leftrightarrow \vec{u} \cdot \vec{v} = 0$
+                    </div>
+                    
+                    <p style="margin-top: 25px;"><strong>Test d'orthogonalité :</strong></p>
+                    <p>Dans un repère orthonormé :</p>
+                    <div class="formula">
+                        $xx' + yy' = 0$
+                    </div>
+                    
+                    <div class="example" style="margin-top: 25px;">
+                        <strong>Exemple :</strong><br>
+                        $\vec{u}(2, 3)$ et $\vec{v}(-3, 2)$<br>
+                        $2 \times (-3) + 3 \times 2 = 0$<br>
+                        Donc $\vec{u} \perp \vec{v}$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 4: Applications géométriques -->
+        <div class="branch-modal-overlay" id="branch4">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #f9ca24;">
+                    <h2>📐 Applications Géométriques</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch4')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <p><strong>Formules d'Al-Kashi :</strong></p>
+                    <div class="formula">
+                        $AB^2 = AC^2 + BC^2 - 2 \cdot AC \cdot BC \cdot \cos(\widehat{C})$
+                    </div>
+                    
+                    <p style="margin-top: 25px;"><strong>Formule de la médiane :</strong></p>
+                    <div class="formula">
+                        $MA^2 + MB^2 = 2MI^2 + \frac{AB^2}{2}$
+                    </div>
+                    <p>où $I$ est le milieu de $[AB]$</p>
+                    
+                    <p style="margin-top: 25px;"><strong>Théorème de la hauteur :</strong></p>
+                    <p>Dans un triangle ABC avec H pied de la hauteur issue de A :</p>
+                    <div class="formula">
+                        $\vec{AB} \cdot \vec{AC} = AB \times AH$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 5: Équations de cercle -->
+        <div class="branch-modal-overlay" id="branch5">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #6c5ce7;">
+                    <h2>⭕ Équations de Cercle et Tangentes</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch5')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <p><strong class="important">Équation d'un cercle :</strong></p>
+                    <p>Cercle de centre $\Omega(a, b)$ et de rayon $R$ :</p>
+                    <div class="formula">
+                        $(x - a)^2 + (y - b)^2 = R^2$
+                    </div>
+                    
+                    <div class="example">
+                        <strong>Exemple :</strong><br>
+                        Centre $\Omega(2, -1)$, rayon $R = 3$<br>
+                        Équation : $(x - 2)^2 + (y + 1)^2 = 9$
+                    </div>
+                    
+                    <p style="margin-top: 25px;"><strong class="important">Forme développée :</strong></p>
+                    <div class="formula">
+                        $x^2 + y^2 - 2ax - 2by + c = 0$
+                    </div>
+                    <p>avec $c = a^2 + b^2 - R^2$</p>
+                    
+                    <p style="margin-top: 25px;"><strong class="important">Équation de la tangente :</strong></p>
+                    <p>Tangente au cercle en un point $A(x_0, y_0)$ :</p>
+                    <div class="formula">
+                        $(x - a)(x_0 - a) + (y - b)(y_0 - b) = R^2$
+                    </div>
+                    
+                    <div class="example">
+                        <strong>Exemple :</strong><br>
+                        Cercle : centre $\Omega(1, 2)$, rayon $R = 5$<br>
+                        Tangente en $A(4, 6)$ :<br>
+                        $(x - 1)(4 - 1) + (y - 2)(6 - 2) = 25$<br>
+                        $3(x - 1) + 4(y - 2) = 25$<br>
+                        $3x + 4y - 11 = 25$<br>
+                        <strong>$3x + 4y = 36$</strong>
+                    </div>
+                    
+                    <p style="margin-top: 25px;"><strong>Propriété :</strong></p>
+                    <p>La tangente en A est perpendiculaire au rayon $[\Omega A]$</p>
+                    <div class="formula">
+                        $\vec{\Omega A} \perp \text{(tangente en A)}$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 6: Calculs d'angles -->
+        <div class="branch-modal-overlay" id="branch6">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #a29bfe;">
+                    <h2>📏 Calculs d'Angles</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch6')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <p><strong>Formule de l'angle :</strong></p>
+                    <div class="formula">
+                        $\cos(\theta) = \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \times \|\vec{v}\|}$
+                    </div>
+                    
+                    <p style="margin-top: 25px;"><strong>Méthode :</strong></p>
+                    <ul>
+                        <li>Calculer $\vec{u} \cdot \vec{v}$</li>
+                        <li>Calculer $\|\vec{u}\|$ et $\|\vec{v}\|$</li>
+                        <li>Appliquer la formule</li>
+                        <li>Utiliser $\arccos$ pour trouver $\theta$</li>
+                    </ul>
+                    
+                    <div class="example" style="margin-top: 25px;">
+                        <strong>Exemple :</strong><br>
+                        $\vec{u}(3, 4)$ et $\vec{v}(1, 2)$<br>
+                        $\vec{u} \cdot \vec{v} = 3 \times 1 + 4 \times 2 = 11$<br>
+                        $\|\vec{u}\| = \sqrt{9+16} = 5$<br>
+                        $\|\vec{v}\| = \sqrt{1+4} = \sqrt{5}$<br>
+                        $\cos(\theta) = \frac{11}{5\sqrt{5}}$<br>
+                        $\theta \approx 8{,}1°$
+                    </div>
+                    
+                    <p style="margin-top: 25px;"><strong>Cas particuliers :</strong></p>
+                    <ul>
+                        <li>$\theta = 0°$ : vecteurs colinéaires de même sens</li>
+                        <li>$\theta = 90°$ : vecteurs orthogonaux</li>
+                        <li>$\theta = 180°$ : vecteurs colinéaires de sens opposé</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Modal Carte Globale -->
@@ -377,182 +702,44 @@
                     <div class="notion-card">
                         <h4>1. Les 3 définitions du produit scalaire</h4>
                         <ul>
-                            <li><strong>Analytique :</strong> <span class="vector">u</span> · <span class="vector">v</span> = xx' + yy'</li>
-                            <li><strong>Géométrique :</strong> <span class="vector">u</span> · <span class="vector">v</span> = ||<span class="vector">u</span>|| × ||<span class="vector">v</span>|| × cos(θ)</li>
-                            <li><strong>Projection :</strong> <span class="vector">u</span> · <span class="vector">v</span> = ||<span class="vector">u</span>|| × proj<sub><span class="vector">u</span></sub>(<span class="vector">v</span>)</li>
+                            <li><strong>Analytique :</strong> $\vec{u} \cdot \vec{v} = xx' + yy'$</li>
+                            <li><strong>Géométrique :</strong> $\vec{u} \cdot \vec{v} = \|\vec{u}\| \times \|\vec{v}\| \times \cos(\theta)$</li>
+                            <li><strong>Projection :</strong> $\vec{u} \cdot \vec{v} = \|\vec{u}\| \times \text{proj}_{\vec{u}}(\vec{v})$</li>
                         </ul>
                         <div class="tip">💡 Savoir passer d'une définition à l'autre selon le contexte</div>
                     </div>
 
                     <div class="notion-card">
                         <h4>2. Orthogonalité</h4>
-                        <div class="formula"><span class="vector">u</span> ⊥ <span class="vector">v</span> ⟺ <span class="vector">u</span> · <span class="vector">v</span> = 0</div>
-                        <div class="tip">💡 Test rapide : xx' + yy' = 0</div>
+                        <div class="formula">$\vec{u} \perp \vec{v} \Leftrightarrow \vec{u} \cdot \vec{v} = 0$</div>
+                        <div class="tip">💡 Test rapide : $xx' + yy' = 0$</div>
                     </div>
 
                     <div class="notion-card">
                         <h4>3. Propriétés essentielles</h4>
                         <ul>
-                            <li><strong>Carré scalaire :</strong> <span class="vector">u</span>² = ||<span class="vector">u</span>||²</li>
+                            <li><strong>Carré scalaire :</strong> $\vec{u}^2 = \|\vec{u}\|^2$</li>
                             <li><strong>Bilinéarité :</strong> distributivité sur l'addition</li>
-                            <li><strong>Symétrie :</strong> <span class="vector">u</span> · <span class="vector">v</span> = <span class="vector">v</span> · <span class="vector">u</span></li>
+                            <li><strong>Symétrie :</strong> $\vec{u} \cdot \vec{v} = \vec{v} \cdot \vec{u}$</li>
                         </ul>
                     </div>
 
                     <div class="notion-card">
-                        <h4>4. Relation de Chasles</h4>
-                        <div class="formula"><span class="vector">AB</span> = <span class="vector">AC</span> + <span class="vector">CB</span></div>
-                        <p>Permet de décomposer un vecteur en passant par un point intermédiaire</p>
+                        <h4>4. Formules géométriques</h4>
                         <ul>
-                            <li><span class="vector">AB</span> + <span class="vector">BC</span> = <span class="vector">AC</span></li>
-                            <li><span class="vector">AB</span> = <span class="vector">AI</span> + <span class="vector">IB</span></li>
-                            <li>Très utile pour simplifier les produits scalaires</li>
-                        </ul>
-                        <div class="tip">💡 Penser à introduire des points (milieu, centre...) pour simplifier !</div>
-                    </div>
-
-                    <div class="notion-card">
-                        <h4>5. Formules géométriques</h4>
-                        <ul>
-                            <li><strong>Al-Kashi :</strong> AB² = AC² + BC² - 2AC·BC·cos(Ĉ)</li>
-                            <li><strong>Médiane :</strong> MA² + MB² = 2MI² + AB²/2</li>
-                            <li><strong>Angle :</strong> cos(θ) = (<span class="vector">u</span>·<span class="vector">v</span>) / (||<span class="vector">u</span>|| × ||<span class="vector">v</span>||)</li>
+                            <li><strong>Al-Kashi :</strong> $AB^2 = AC^2 + BC^2 - 2 \cdot AC \cdot BC \cdot \cos(\widehat{C})$</li>
+                            <li><strong>Médiane :</strong> $MA^2 + MB^2 = 2MI^2 + \frac{AB^2}{2}$</li>
+                            <li><strong>Angle :</strong> $\cos(\theta) = \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \times \|\vec{v}\|}$</li>
                         </ul>
                     </div>
 
                     <div class="notion-card">
-                        <h4>6. Équations de cercle</h4>
+                        <h4>5. Équations de cercle</h4>
                         <ul>
-                            <li><strong>Cercle :</strong> (x - a)² + (y - b)² = R²</li>
-                            <li><strong>Tangente en A(x₀, y₀) :</strong> (x - a)(x₀ - a) + (y - b)(y₀ - b) = R²</li>
-                            <li><strong>Propriété :</strong> La tangente est ⊥ au rayon</li>
+                            <li><strong>Cercle :</strong> $(x - a)^2 + (y - b)^2 = R^2$</li>
+                            <li><strong>Tangente en $A(x_0, y_0)$ :</strong> $(x - a)(x_0 - a) + (y - b)(y_0 - b) = R^2$</li>
+                            <li><strong>Propriété :</strong> La tangente est $\perp$ au rayon</li>
                         </ul>
-                    </div>
-                </div>
-
-                <div class="modal-section">
-                    <h3>🎓 EXEMPLE DÉTAILLÉ : UTILISATION DE CHASLES</h3>
-                    
-                    <div class="method-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
-                        <h4>📌 Exemple : Simplifier <span class="vector">MA</span> · <span class="vector">MB</span> avec I milieu de [AB]</h4>
-                        
-                        <p><strong>Donnée :</strong> I est le milieu de [AB]</p>
-                        <p><strong>Objectif :</strong> Exprimer <span class="vector">MA</span> · <span class="vector">MB</span> en fonction de MI et AB</p>
-                        
-                        <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px;">
-                            <p><strong>🔹 Étape 1 : Utiliser Chasles pour décomposer depuis I</strong></p>
-                            <div class="formula">
-                                <span class="vector">MA</span> = <span class="vector">MI</span> + <span class="vector">IA</span><br>
-                                <span class="vector">MB</span> = <span class="vector">MI</span> + <span class="vector">IB</span>
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>🔹 Étape 2 : Développer le produit scalaire</strong></p>
-                            <div class="formula" style="text-align: left; padding: 15px;">
-                                <span class="vector">MA</span> · <span class="vector">MB</span> = (<span class="vector">MI</span> + <span class="vector">IA</span>) · (<span class="vector">MI</span> + <span class="vector">IB</span>)<br><br>
-                                = <span class="vector">MI</span> · <span class="vector">MI</span> + <span class="vector">MI</span> · <span class="vector">IB</span> + <span class="vector">IA</span> · <span class="vector">MI</span> + <span class="vector">IA</span> · <span class="vector">IB</span><br><br>
-                                = MI² + <span class="vector">MI</span> · <span class="vector">IB</span> + <span class="vector">MI</span> · <span class="vector">IA</span> + <span class="vector">IA</span> · <span class="vector">IB</span>
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>🔹 Étape 3 : Utiliser les propriétés du milieu</strong></p>
-                            <p>Comme I est le milieu : <span class="vector">IA</span> = -<span class="vector">IB</span></p>
-                            <div class="formula" style="text-align: left; padding: 15px;">
-                                <span class="vector">MI</span> · <span class="vector">IB</span> + <span class="vector">MI</span> · <span class="vector">IA</span> = <span class="vector">MI</span> · (<span class="vector">IB</span> + <span class="vector">IA</span>) = <span class="vector">MI</span> · <span class="vector">0</span> = 0<br><br>
-                                <span class="vector">IA</span> · <span class="vector">IB</span> = (-<span class="vector">IB</span>) · <span class="vector">IB</span> = -IB² = -IA²
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>🔹 Étape 4 : Simplifier avec IA = AB/2</strong></p>
-                            <div class="formula" style="text-align: left; padding: 15px;">
-                                <span class="vector">MA</span> · <span class="vector">MB</span> = MI² - IA²<br><br>
-                                = MI² - (AB/2)²<br><br>
-                                <strong style="color: #e74c3c; font-size: 1.2em;">= MI² - AB²/4</strong>
-                            </div>
-                        </div>
-                        
-                        <div class="tip" style="background: #c8e6c9; border-color: #4caf50;">
-                            <strong>✅ Formule à retenir :</strong> <span class="vector">MA</span> · <span class="vector">MB</span> = MI² - AB²/4 (formule de la médiane simplifiée)
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-section">
-                    <h3>📝 EXERCICE TYPE AVEC CHASLES</h3>
-                    
-                    <div class="method-card" style="background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%); border-left: 4px solid #fbc02d;">
-                        <h4>💪 EXERCICE : Calculer un produit scalaire</h4>
-                        
-                        <div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                            <p><strong>Énoncé :</strong></p>
-                            <p>ABCD est un carré de côté 4. I est le milieu de [AB] et J est le milieu de [BC].</p>
-                            <p><strong>Calculer <span class="vector">AI</span> · <span class="vector">AJ</span></strong></p>
-                        </div>
-                        
-                        <details style="margin: 15px 0;">
-                            <summary style="cursor: pointer; font-weight: bold; color: #1976d2; padding: 10px; background: #e3f2fd; border-radius: 5px;">
-                                👉 Cliquer pour voir la solution détaillée
-                            </summary>
-                            
-                            <div style="padding: 15px; margin-top: 10px; background: white; border-radius: 8px;">
-                                <p><strong>🔷 Méthode 1 : Avec les coordonnées</strong></p>
-                                <div style="padding: 10px; background: #f5f5f5; border-radius: 5px; margin: 10px 0;">
-                                    On place un repère orthonormé en A :<br>
-                                    • A(0, 0), B(4, 0), C(4, 4), D(0, 4)<br>
-                                    • I milieu de [AB] → I(2, 0)<br>
-                                    • J milieu de [BC] → J(4, 2)<br><br>
-                                    
-                                    <span class="vector">AI</span>(2, 0) et <span class="vector">AJ</span>(4, 2)<br><br>
-                                    
-                                    <span class="vector">AI</span> · <span class="vector">AJ</span> = 2×4 + 0×2 = <strong style="color: #e74c3c;">8</strong>
-                                </div>
-                                
-                                <p style="margin-top: 20px;"><strong>🔷 Méthode 2 : Avec Chasles (plus élégante !)</strong></p>
-                                <div style="padding: 10px; background: #f5f5f5; border-radius: 5px; margin: 10px 0;">
-                                    <strong>Étape 1 :</strong> Décomposer <span class="vector">AJ</span> avec Chasles<br>
-                                    <span class="vector">AJ</span> = <span class="vector">AB</span> + <span class="vector">BJ</span><br><br>
-                                    
-                                    <strong>Étape 2 :</strong> Calculer le produit scalaire<br>
-                                    <span class="vector">AI</span> · <span class="vector">AJ</span> = <span class="vector">AI</span> · (<span class="vector">AB</span> + <span class="vector">BJ</span>)<br>
-                                    = <span class="vector">AI</span> · <span class="vector">AB</span> + <span class="vector">AI</span> · <span class="vector">BJ</span><br><br>
-                                    
-                                    <strong>Étape 3 :</strong> Calculer chaque terme<br>
-                                    • <span class="vector">AI</span> et <span class="vector">AB</span> sont colinéaires de même sens<br>
-                                    <span class="vector">AI</span> · <span class="vector">AB</span> = ||<span class="vector">AI</span>|| × ||<span class="vector">AB</span>|| = 2 × 4 = 8<br><br>
-                                    
-                                    • <span class="vector">AI</span> et <span class="vector">BJ</span> sont orthogonaux (I sur AB, J sur BC, angle droit)<br>
-                                    <span class="vector">AI</span> · <span class="vector">BJ</span> = 0<br><br>
-                                    
-                                    <strong>Résultat :</strong> <span class="vector">AI</span> · <span class="vector">AJ</span> = 8 + 0 = <strong style="color: #e74c3c; font-size: 1.2em;">8</strong>
-                                </div>
-                                
-                                <div class="tip" style="margin-top: 15px;">
-                                    <strong>💡 Avantage de la méthode Chasles :</strong> Pas besoin de coordonnées ! On utilise les propriétés géométriques (colinéarité, orthogonalité).
-                                </div>
-                            </div>
-                        </details>
-                        
-                        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #4caf50;">
-                            <p><strong>🎯 À retenir pour cet exercice type :</strong></p>
-                            <ul>
-                                <li>Décomposer avec Chasles pour faire apparaître des vecteurs simples</li>
-                                <li>Exploiter les propriétés du carré (angles droits, côtés égaux)</li>
-                                <li>Repérer les vecteurs colinéaires et orthogonaux</li>
-                                <li>La méthode Chasles évite les calculs lourds de coordonnées</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="method-card" style="margin-top: 20px;">
-                        <h4>🎯 Autre exercice rapide</h4>
-                        <p><strong>ABC est un triangle. G est le centre de gravité.</strong></p>
-                        <p>Montrer que : <span class="vector">GA</span> + <span class="vector">GB</span> + <span class="vector">GC</span> = <span class="vector">0</span></p>
-                        
-                        <details style="margin: 10px 0;">
-                            <summary style="cursor: pointer; font-weight: bold; color: #1976d2; padding: 10px; background: #e3f2fd; border-radius: 5px;">
-                                👉 Indice
-                            </summary>
-                            <div style="padding: 10px; margin-top: 5px;">
-                                C'est la <strong>définition</strong> du centre de gravité ! Le point G tel que <span class="vector">GA</span> + <span class="vector">GB</span> + <span class="vector">GC</span> = <span class="vector">0</span>
-                            </div>
-                        </details>
                     </div>
                 </div>
 
@@ -563,9 +750,9 @@
                         <h4>Méthode 1 : Calculer un produit scalaire</h4>
                         <ul class="checklist">
                             <li>Identifier les coordonnées des vecteurs</li>
-                            <li>Appliquer <span class="vector">u</span> · <span class="vector">v</span> = xx' + yy'</li>
-                            <li>OU utiliser ||<span class="vector">u</span>|| × ||<span class="vector">v</span>|| × cos(θ) si l'angle est connu</li>
-                            <li>Vérifier le signe (positif si θ < 90°, négatif si θ > 90°)</li>
+                            <li>Appliquer $\vec{u} \cdot \vec{v} = xx' + yy'$</li>
+                            <li>OU utiliser $\|\vec{u}\| \times \|\vec{v}\| \times \cos(\theta)$ si l'angle est connu</li>
+                            <li>Vérifier le signe (positif si $\theta < 90°$, négatif si $\theta > 90°$)</li>
                         </ul>
                     </div>
 
@@ -573,31 +760,31 @@
                         <h4>Méthode 2 : Démontrer que deux vecteurs sont orthogonaux</h4>
                         <ul class="checklist">
                             <li>Calculer les coordonnées des deux vecteurs</li>
-                            <li>Calculer <span class="vector">u</span> · <span class="vector">v</span> = xx' + yy'</li>
+                            <li>Calculer $\vec{u} \cdot \vec{v} = xx' + yy'$</li>
                             <li>Vérifier que le résultat = 0</li>
-                            <li>Conclure : <span class="vector">u</span> ⊥ <span class="vector">v</span></li>
+                            <li>Conclure : $\vec{u} \perp \vec{v}$</li>
                         </ul>
                     </div>
 
                     <div class="method-card">
                         <h4>Méthode 3 : Calculer un angle entre deux vecteurs</h4>
                         <ul class="checklist">
-                            <li>Calculer <span class="vector">u</span> · <span class="vector">v</span></li>
-                            <li>Calculer ||<span class="vector">u</span>|| = √(x² + y²)</li>
-                            <li>Calculer ||<span class="vector">v</span>|| = √(x'² + y'²)</li>
-                            <li>Appliquer cos(θ) = (<span class="vector">u</span>·<span class="vector">v</span>) / (||<span class="vector">u</span>|| × ||<span class="vector">v</span>||)</li>
-                            <li>Utiliser la calculatrice : θ = arccos(...)</li>
+                            <li>Calculer $\vec{u} \cdot \vec{v}$</li>
+                            <li>Calculer $\|\vec{u}\| = \sqrt{x^2 + y^2}$</li>
+                            <li>Calculer $\|\vec{v}\| = \sqrt{x'^2 + y'^2}$</li>
+                            <li>Appliquer $\cos(\theta) = \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \times \|\vec{v}\|}$</li>
+                            <li>Utiliser la calculatrice : $\theta = \arccos(...)$</li>
                         </ul>
                     </div>
 
                     <div class="method-card">
                         <h4>Méthode 4 : Équation d'un cercle et de sa tangente</h4>
                         <ul class="checklist">
-                            <li><strong>Pour le cercle :</strong> identifier le centre Ω(a, b) et le rayon R</li>
-                            <li>Écrire : (x - a)² + (y - b)² = R²</li>
-                            <li><strong>Pour la tangente en A(x₀, y₀) :</strong></li>
-                            <li>Utiliser : (x - a)(x₀ - a) + (y - b)(y₀ - b) = R²</li>
-                            <li>Développer et simplifier pour obtenir ax + by = c</li>
+                            <li><strong>Pour le cercle :</strong> identifier le centre $\Omega(a, b)$ et le rayon $R$</li>
+                            <li>Écrire : $(x - a)^2 + (y - b)^2 = R^2$</li>
+                            <li><strong>Pour la tangente en $A(x_0, y_0)$ :</strong></li>
+                            <li>Utiliser : $(x - a)(x_0 - a) + (y - b)(y_0 - b) = R^2$</li>
+                            <li>Développer et simplifier pour obtenir $ax + by = c$</li>
                         </ul>
                     </div>
 
@@ -605,7 +792,7 @@
                         <h4>Méthode 5 : Utiliser Al-Kashi dans un triangle</h4>
                         <ul class="checklist">
                             <li>Identifier le côté recherché et l'angle opposé</li>
-                            <li>Appliquer AB² = AC² + BC² - 2AC·BC·cos(Ĉ)</li>
+                            <li>Appliquer $AB^2 = AC^2 + BC^2 - 2 \cdot AC \cdot BC \cdot \cos(\widehat{C})$</li>
                             <li>Attention : l'angle est opposé au côté cherché</li>
                             <li>Calculer puis prendre la racine carrée</li>
                         </ul>
@@ -618,7 +805,7 @@
                         <strong>✓ Toujours faire un schéma</strong> pour visualiser la situation géométrique
                     </div>
                     <div class="tip">
-                        <strong>✓ Vérifier la cohérence des signes</strong> (θ aigu → produit scalaire > 0)
+                        <strong>✓ Vérifier la cohérence des signes</strong> ($\theta$ aigu → produit scalaire > 0)
                     </div>
                     <div class="tip">
                         <strong>✓ Utiliser la définition la plus adaptée</strong> au contexte (analytique si coordonnées données)
@@ -627,7 +814,7 @@
                         <strong>✓ Penser à la formule de la médiane</strong> pour les exercices sur les milieux
                     </div>
                     <div class="tip">
-                        <strong>✓ Ne pas oublier les propriétés du cercle</strong> : tangente ⊥ rayon
+                        <strong>✓ Ne pas oublier les propriétés du cercle</strong> : tangente $\perp$ rayon
                     </div>
                     <div class="tip">
                         <strong>✓ Vérifier les résultats</strong> avec les cas particuliers (vecteurs colinéaires, orthogonaux)
@@ -635,214 +822,17 @@
                 </div>
             </div>
         </div>
-
-        <div class="mind-map">
-            <div class="central-node" onclick="openModal()">
-                PRODUIT<br>SCALAIRE<br>
-                <span style="font-size: 0.7em;">(Première)</span><br>
-                <span style="font-size: 0.5em; opacity: 0.9;">📋 Cliquer pour la carte globale</span>
-            </div>
-
-            <div class="branches">
-                <!-- Branche 1: Définitions -->
-                <div class="branch branch-1">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>📚 Définitions</h3>
-                        <div class="branch-content">
-                            <p><strong>Définition analytique :</strong></p>
-                            <div class="formula">
-                                <span class="vector">u</span> · <span class="vector">v</span> = x·x' + y·y'
-                            </div>
-                            <p>Si <span class="vector">u</span>(x,y) et <span class="vector">v</span>(x',y')</p>
-                            
-                            <p style="margin-top: 15px;"><strong>Définition géométrique :</strong></p>
-                            <div class="formula">
-                                <span class="vector">u</span> · <span class="vector">v</span> = ||<span class="vector">u</span>|| × ||<span class="vector">v</span>|| × cos(θ)
-                            </div>
-                            <p>où θ est l'angle entre <span class="vector">u</span> et <span class="vector">v</span></p>
-                            
-                            <p style="margin-top: 15px;"><strong>Projection :</strong></p>
-                            <div class="formula">
-                                <span class="vector">u</span> · <span class="vector">v</span> = ||<span class="vector">u</span>|| × proj<sub><span class="vector">u</span></sub>(<span class="vector">v</span>)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 2: Propriétés -->
-                <div class="branch branch-2">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>⚙️ Propriétés</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Commutativité :</strong></p>
-                            <div class="formula"><span class="vector">u</span> · <span class="vector">v</span> = <span class="vector">v</span> · <span class="vector">u</span></div>
-                            
-                            <p><strong class="important">Distributivité :</strong></p>
-                            <div class="formula"><span class="vector">u</span> · (<span class="vector">v</span> + <span class="vector">w</span>) = <span class="vector">u</span>·<span class="vector">v</span> + <span class="vector">u</span>·<span class="vector">w</span></div>
-                            
-                            <p><strong class="important">Homogénéité :</strong></p>
-                            <div class="formula">(k<span class="vector">u</span>) · <span class="vector">v</span> = k(<span class="vector">u</span>·<span class="vector">v</span>)</div>
-                            
-                            <p><strong class="important">Carré scalaire :</strong></p>
-                            <div class="formula"><span class="vector">u</span> · <span class="vector">u</span> = ||<span class="vector">u</span>||²</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 3: Orthogonalité -->
-                <div class="branch branch-3">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>⊥ Orthogonalité</h3>
-                        <div class="branch-content">
-                            <p><strong>Vecteurs orthogonaux :</strong></p>
-                            <div class="formula">
-                                <span class="vector">u</span> ⊥ <span class="vector">v</span> ⟺ <span class="vector">u</span> · <span class="vector">v</span> = 0
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Test d'orthogonalité :</strong></p>
-                            <p>Dans un repère orthonormé :</p>
-                            <div class="formula">
-                                xx' + yy' = 0
-                            </div>
-                            
-                            <div class="example">
-                                <strong>Exemple :</strong><br>
-                                <span class="vector">u</span>(2, 3) et <span class="vector">v</span>(-3, 2)<br>
-                                2×(-3) + 3×2 = 0<br>
-                                Donc <span class="vector">u</span> ⊥ <span class="vector">v</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 4: Applications géométriques -->
-                <div class="branch branch-4">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>📐 Applications Géométriques</h3>
-                        <div class="branch-content">
-                            <p><strong>Formules d'Al-Kashi :</strong></p>
-                            <div class="formula">
-                                AB² = AC² + BC² - 2AC·BC·cos(Ĉ)
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Formule de la médiane :</strong></p>
-                            <div class="formula">
-                                MA² + MB² = 2MI² + AB²/2
-                            </div>
-                            <p>où I est le milieu de [AB]</p>
-                            
-                            <p style="margin-top: 15px;"><strong>Théorème de la hauteur :</strong></p>
-                            <p>Dans un triangle ABC avec H pied de la hauteur issue de A :</p>
-                            <div class="formula">
-                                <span class="vector">AB</span> · <span class="vector">AC</span> = AB × AH
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 5: Équations de cercle -->
-                <div class="branch branch-5">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>⭕ Équations de Cercle</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Équation d'un cercle :</strong></p>
-                            <p>Cercle de centre Ω(a, b) et de rayon R :</p>
-                            <div class="formula">
-                                (x - a)² + (y - b)² = R²
-                            </div>
-                            
-                            <div class="example">
-                                <strong>Exemple :</strong><br>
-                                Centre Ω(2, -1), rayon R = 3<br>
-                                Équation : (x - 2)² + (y + 1)² = 9
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong class="important">Forme développée :</strong></p>
-                            <div class="formula">
-                                x² + y² - 2ax - 2by + c = 0
-                            </div>
-                            <p>avec c = a² + b² - R²</p>
-                            
-                            <p style="margin-top: 15px;"><strong class="important">Équation de la tangente :</strong></p>
-                            <p>Tangente au cercle en un point A(x₀, y₀) :</p>
-                            <div class="formula">
-                                (x - a)(x₀ - a) + (y - b)(y₀ - b) = R²
-                            </div>
-                            
-                            <div class="example">
-                                <strong>Exemple :</strong><br>
-                                Cercle : centre Ω(1, 2), rayon R = 5<br>
-                                Tangente en A(4, 6) :<br>
-                                (x - 1)(4 - 1) + (y - 2)(6 - 2) = 25<br>
-                                3(x - 1) + 4(y - 2) = 25<br>
-                                3x + 4y - 11 = 25<br>
-                                <strong>3x + 4y = 36</strong>
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Propriété :</strong></p>
-                            <p>La tangente en A est perpendiculaire au rayon [ΩA]</p>
-                            <div class="formula">
-                                <span class="vector">ΩA</span> ⊥ (tangente en A)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 6: Calculs d'angles -->
-                <div class="branch branch-6">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>📏 Calculs d'Angles</h3>
-                        <div class="branch-content">
-                            <p><strong>Formule de l'angle :</strong></p>
-                            <div class="formula">
-                                cos(θ) = (<span class="vector">u</span> · <span class="vector">v</span>) / (||<span class="vector">u</span>|| × ||<span class="vector">v</span>||)
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Méthode :</strong></p>
-                            <ul>
-                                <li>Calculer <span class="vector">u</span> · <span class="vector">v</span></li>
-                                <li>Calculer ||<span class="vector">u</span>|| et ||<span class="vector">v</span>||</li>
-                                <li>Appliquer la formule</li>
-                                <li>Utiliser arccos pour trouver θ</li>
-                            </ul>
-                            
-                            <div class="example">
-                                <strong>Exemple :</strong><br>
-                                <span class="vector">u</span>(3, 4) et <span class="vector">v</span>(1, 2)<br>
-                                <span class="vector">u</span> · <span class="vector">v</span> = 3×1 + 4×2 = 11<br>
-                                ||<span class="vector">u</span>|| = √(9+16) = 5<br>
-                                ||<span class="vector">v</span>|| = √(1+4) = √5<br>
-                                cos(θ) = 11/(5√5)<br>
-                                θ ≈ 8,1°
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Cas particuliers :</strong></p>
-                            <ul>
-                                <li>θ = 0° : vecteurs colinéaires de même sens</li>
-                                <li>θ = 90° : vecteurs orthogonaux</li>
-                                <li>θ = 180° : vecteurs colinéaires de sens opposé</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
-        function toggleContent(element) {
-            const content = element.querySelector('.branch-content');
-            const allContents = document.querySelectorAll('.branch-content');
-            
-            // Fermer tous les autres contenus
-            allContents.forEach(c => {
-                if (c !== content) {
-                    c.classList.remove('active');
-                }
-            });
-            
-            // Toggle le contenu actuel
-            content.classList.toggle('active');
+        function openBranchModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBranchModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function openModal() {
@@ -855,19 +845,25 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Fermer le modal en cliquant sur l'overlay
+        // Fermer les modaux en cliquant sur l'overlay
         document.addEventListener('DOMContentLoaded', () => {
-            const overlay = document.getElementById('modalOverlay');
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    closeModal();
-                }
+            const overlays = document.querySelectorAll('.branch-modal-overlay');
+            overlays.forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        closeBranchModal(overlay.id);
+                    }
+                });
             });
 
             // Fermer avec la touche Échap
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    closeModal();
+                    overlays.forEach(overlay => {
+                        if (overlay.classList.contains('active')) {
+                            closeBranchModal(overlay.id);
+                        }
+                    });
                 }
             });
         });

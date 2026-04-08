@@ -1,9 +1,22 @@
-Aussi<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carte Mentale - Suites Arithmético-Géométriques (Première)</title>
+    
+    <!-- MathJax pour les formules LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -30,6 +43,17 @@ Aussi<!DOCTYPE html>
             margin-bottom: 30px;
             font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .instructions {
+            text-align: center;
+            color: white;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
         }
 
         .mind-map {
@@ -94,98 +118,140 @@ Aussi<!DOCTYPE html>
             color: #333;
         }
 
-        .branch-content {
-            display: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #f0f0f0;
+        .branch-node p {
             font-size: 0.9em;
-            color: #555;
-            line-height: 1.6;
+            color: #666;
+            line-height: 1.4;
         }
 
-        .branch-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
+        /* Positioning des branches */
+        .branch-1 { top: 10%; left: 15%; }
+        .branch-2 { top: 10%; right: 15%; }
+        .branch-3 { top: 50%; right: 5%; transform: translateY(-50%); }
+        .branch-4 { bottom: 10%; right: 15%; }
+        .branch-5 { bottom: 10%; left: 15%; }
+        .branch-6 { top: 50%; left: 5%; transform: translateY(-50%); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .branch-1 { top: 8%; left: 12%; }
+        /* Couleurs des branches */
         .branch-1 .branch-node { border-color: #ff6b6b; }
-
-        .branch-2 { top: 12%; right: 10%; }
         .branch-2 .branch-node { border-color: #4ecdc4; }
-
-        .branch-3 { top: 45%; right: 3%; }
         .branch-3 .branch-node { border-color: #45b7d1; }
-
-        .branch-4 { bottom: 12%; right: 12%; }
         .branch-4 .branch-node { border-color: #f9ca24; }
-
-        .branch-5 { bottom: 8%; left: 10%; }
         .branch-5 .branch-node { border-color: #6c5ce7; }
+        .branch-6 .branch-node { border-color: #fd79a8; }
 
-        .branch-6 { top: 45%; left: 3%; }
-        .branch-6 .branch-node { border-color: #a29bfe; }
+        /* Modals pour les branches */
+        .branch-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .branch-modal-overlay.active {
+            display: flex;
+        }
+
+        .branch-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .branch-modal-content h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .branch-modal-content h3 {
+            color: #fa8bff;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        .branch-modal-content h4 {
+            color: #4ecdc4;
+            font-size: 1.2em;
+            margin: 15px 0 10px 0;
+        }
 
         .formula {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 8px 0;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.2em;
             text-align: center;
-            color: #2d3436;
+            border-left: 4px solid #667eea;
+            font-weight: 500;
         }
 
         .example {
-            background: #fff3cd;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 8px 0;
-            border-left: 4px solid #ffc107;
-        }
-
-        .important {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-
-        .method {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 8px 0;
-            border-left: 4px solid #2196f3;
-        }
-
-        ul {
-            margin-left: 20px;
-            margin-top: 8px;
-        }
-
-        li {
-            margin: 5px 0;
-        }
-
-        .instructions {
-            background: rgba(255,255,255,0.95);
-            padding: 15px 20px;
+            background: #f8f9fa;
+            padding: 20px;
             border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            margin: 15px 0;
+            border-left: 4px solid #4ecdc4;
         }
 
-        .highlight {
-            background: #ffeb3b;
-            padding: 2px 5px;
-            border-radius: 3px;
+        .example h4 {
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+
+        .step {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .close-branch-modal {
+            position: sticky;
+            top: 10px;
+            float: right;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-branch-modal:hover {
+            background: #c0392b;
+            transform: scale(1.05);
         }
 
         /* Modal Carte Globale */
@@ -196,7 +262,7 @@ Aussi<!DOCTYPE html>
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -212,7 +278,7 @@ Aussi<!DOCTYPE html>
             background: white;
             border-radius: 20px;
             padding: 40px;
-            max-width: 900px;
+            max-width: 1200px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -256,26 +322,32 @@ Aussi<!DOCTYPE html>
             padding-left: 15px;
         }
 
-        .modal-section h4 {
-            color: #4ecdc4;
-            font-size: 1.2em;
-            margin: 15px 0 10px 0;
-        }
-
         .notion-card {
             background: linear-gradient(135deg, #fa8bff20 0%, #2bd2ff20 100%);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
-            margin: 10px 0;
+            margin: 15px 0;
             border-left: 4px solid #2bd2ff;
+        }
+
+        .notion-card h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 12px;
         }
 
         .method-card {
             background: linear-gradient(135deg, #2bff8820 0%, #f9ca2420 100%);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
-            margin: 10px 0;
+            margin: 15px 0;
             border-left: 4px solid #2bff88;
+        }
+
+        .method-card h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 12px;
         }
 
         .close-modal {
@@ -306,6 +378,7 @@ Aussi<!DOCTYPE html>
             border-radius: 8px;
             margin: 8px 0;
             border-left: 4px solid #ffc107;
+            font-weight: 500;
         }
 
         .checklist {
@@ -328,6 +401,16 @@ Aussi<!DOCTYPE html>
             font-size: 1.3em;
         }
 
+        ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
         @media (max-width: 768px) {
             .branch {
                 position: relative !important;
@@ -336,6 +419,7 @@ Aussi<!DOCTYPE html>
                 right: auto !important;
                 bottom: auto !important;
                 margin: 15px;
+                transform: none !important;
             }
 
             .mind-map {
@@ -345,6 +429,15 @@ Aussi<!DOCTYPE html>
             .central-node {
                 margin-bottom: 30px;
             }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .branch-modal-content,
+            .modal-content {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -353,7 +446,492 @@ Aussi<!DOCTYPE html>
         <h1>🔢 Carte Mentale - Suites Arithmético-Géométriques</h1>
         
         <div class="instructions">
-            <strong>💡 Cliquez sur chaque section</strong> pour découvrir les détails des concepts
+            <strong>💡 Cliquez sur la bulle centrale</strong> pour voir les notions essentielles | <strong>Cliquez sur chaque branche</strong> pour voir les détails
+        </div>
+
+        <div class="mind-map">
+            <div class="central-node" onclick="openModal()">
+                SUITES<br>ARITHMÉTICO-<br>GÉOMÉTRIQUES
+            </div>
+
+            <div class="branches">
+                <!-- Branche 1: Définition -->
+                <div class="branch branch-1">
+                    <div class="branch-node" onclick="openBranchModal('modal1')">
+                        <h3>📚 Définition</h3>
+                        <p>Forme générale et reconnaissance</p>
+                    </div>
+                </div>
+
+                <!-- Branche 2: Point Fixe -->
+                <div class="branch branch-2">
+                    <div class="branch-node" onclick="openBranchModal('modal2')">
+                        <h3>🎯 Point Fixe</h3>
+                        <p>Calcul et signification</p>
+                    </div>
+                </div>
+
+                <!-- Branche 3: Suite Auxiliaire -->
+                <div class="branch branch-3">
+                    <div class="branch-node" onclick="openBranchModal('modal3')">
+                        <h3>🔄 Suite Auxiliaire</h3>
+                        <p>Transformation en suite géométrique</p>
+                    </div>
+                </div>
+
+                <!-- Branche 4: Formule Explicite -->
+                <div class="branch branch-4">
+                    <div class="branch-node" onclick="openBranchModal('modal4')">
+                        <h3>📐 Formule Explicite</h3>
+                        <p>Expression de $u_n$ en fonction de $n$</p>
+                    </div>
+                </div>
+
+                <!-- Branche 5: Méthode de Résolution -->
+                <div class="branch branch-5">
+                    <div class="branch-node" onclick="openBranchModal('modal5')">
+                        <h3>✍️ Méthode de Résolution</h3>
+                        <p>Étapes complètes pas à pas</p>
+                    </div>
+                </div>
+
+                <!-- Branche 6: Comportement -->
+                <div class="branch branch-6">
+                    <div class="branch-node" onclick="openBranchModal('modal6')">
+                        <h3>📊 Comportement & Convergence</h3>
+                        <p>Étude de la limite</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals pour chaque branche -->
+        
+        <!-- Modal 1: Définition -->
+        <div class="branch-modal-overlay" id="modal1">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal1')">✕ Fermer</button>
+                
+                <h2>📚 Définition</h2>
+                
+                <h3>Forme générale</h3>
+                <div class="formula">
+                    $u_{n+1} = a \cdot u_n + b$
+                </div>
+                <p><strong>Avec :</strong></p>
+                <ul>
+                    <li>$a \neq 1$ (sinon suite arithmétique)</li>
+                    <li>$b \neq 0$ (sinon suite géométrique)</li>
+                    <li>$u_0$ est le premier terme donné</li>
+                </ul>
+
+                <h3>🔍 Comment la reconnaître ?</h3>
+                <ul>
+                    <li>La relation de récurrence contient <strong>à la fois un produit et une addition</strong></li>
+                    <li>Le terme suivant dépend du terme précédent : $u_{n+1}$ dépend de $u_n$</li>
+                    <li>Les coefficients $a$ et $b$ sont des constantes</li>
+                </ul>
+
+                <div class="example">
+                    <h4>📝 Exemple 1</h4>
+                    <div class="formula">$u_{n+1} = 0.5 \cdot u_n + 3$ avec $u_0 = 2$</div>
+                    <p>Ici : $a = 0.5$ et $b = 3$</p>
+                    <p>C'est bien une suite arithmético-géométrique ✓</p>
+                </div>
+
+                <div class="example">
+                    <h4>📝 Exemple 2</h4>
+                    <div class="formula">$u_{n+1} = 2u_n - 5$ avec $u_0 = 10$</div>
+                    <p>Ici : $a = 2$ et $b = -5$</p>
+                    <p>C'est une suite arithmético-géométrique ✓</p>
+                </div>
+
+                <h3>⚠️ Cas particuliers</h3>
+                <ul>
+                    <li>Si $a = 1$ : $u_{n+1} = u_n + b$ → Suite <strong>arithmétique</strong> de raison $b$</li>
+                    <li>Si $b = 0$ : $u_{n+1} = a \cdot u_n$ → Suite <strong>géométrique</strong> de raison $a$</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Modal 2: Point Fixe -->
+        <div class="branch-modal-overlay" id="modal2">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal2')">✕ Fermer</button>
+                
+                <h2>🎯 Point Fixe</h2>
+                
+                <h3>Définition</h3>
+                <p>Le <strong>point fixe</strong> $\ell$ (ell) est la valeur qui reste inchangée par la relation de récurrence.</p>
+                
+                <div class="formula">
+                    $\ell = a \cdot \ell + b$
+                </div>
+
+                <h3>📐 Formule du point fixe</h3>
+                <div class="formula">
+                    $\ell = \frac{b}{1 - a}$
+                </div>
+                <p><strong>Attention :</strong> Cette formule n'existe que si $a \neq 1$</p>
+
+                <h3>🔍 Interprétation</h3>
+                <ul>
+                    <li>Si la suite converge, elle converge <strong>vers $\ell$</strong></li>
+                    <li>$\ell$ est la limite de la suite (si elle existe)</li>
+                    <li>C'est la valeur d'équilibre de la suite</li>
+                </ul>
+
+                <div class="example">
+                    <h4>📝 Exemple</h4>
+                    <p>Soit $u_{n+1} = 0.5 \cdot u_n + 3$</p>
+                    <div class="step">
+                        <strong>Étape 1 :</strong> Identifier $a$ et $b$<br>
+                        $a = 0.5$ et $b = 3$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 2 :</strong> Calculer le point fixe<br>
+                        $\ell = \frac{b}{1-a} = \frac{3}{1-0.5} = \frac{3}{0.5} = 6$
+                    </div>
+                    <div class="step">
+                        <strong>Conclusion :</strong> Le point fixe est $\ell = 6$<br>
+                        Si la suite converge, elle converge vers 6.
+                    </div>
+                </div>
+
+                <div class="tip">
+                    💡 <strong>Astuce :</strong> Toujours calculer le point fixe en premier ! C'est la clé pour construire la suite auxiliaire.
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 3: Suite Auxiliaire -->
+        <div class="branch-modal-overlay" id="modal3">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal3')">✕ Fermer</button>
+                
+                <h2>🔄 Suite Auxiliaire</h2>
+                
+                <h3>Principe</h3>
+                <p>On introduit une <strong>nouvelle suite $(v_n)$</strong> qui est <strong>géométrique</strong> !</p>
+                
+                <div class="formula">
+                    $v_n = u_n - \ell$
+                </div>
+
+                <h3>✨ Propriété magique</h3>
+                <p>Si $u_{n+1} = a \cdot u_n + b$ et $\ell = \frac{b}{1-a}$, alors :</p>
+                <div class="formula">
+                    $v_{n+1} = a \cdot v_n$
+                </div>
+                <p><strong>$(v_n)$ est une suite géométrique de raison $a$ !</strong></p>
+
+                <h3>📐 Démonstration</h3>
+                <div class="step">
+                    On part de : $v_{n+1} = u_{n+1} - \ell$
+                </div>
+                <div class="step">
+                    Or $u_{n+1} = a \cdot u_n + b$, donc :<br>
+                    $v_{n+1} = a \cdot u_n + b - \ell$
+                </div>
+                <div class="step">
+                    Or $\ell = a \cdot \ell + b$, donc $b = \ell - a \cdot \ell$<br>
+                    Donc : $v_{n+1} = a \cdot u_n + (\ell - a \cdot \ell) - \ell$
+                </div>
+                <div class="step">
+                    $v_{n+1} = a \cdot u_n - a \cdot \ell = a(u_n - \ell) = a \cdot v_n$ ✓
+                </div>
+
+                <h3>🎯 Formule de $(v_n)$</h3>
+                <p>Puisque $(v_n)$ est géométrique de raison $a$ :</p>
+                <div class="formula">
+                    $v_n = v_0 \cdot a^n$
+                </div>
+                <p>Avec $v_0 = u_0 - \ell$</p>
+
+                <div class="example">
+                    <h4>📝 Exemple</h4>
+                    <p>Soit $u_{n+1} = 0.5 \cdot u_n + 3$ avec $u_0 = 2$</p>
+                    <div class="step">
+                        <strong>Étape 1 :</strong> Calculer $\ell$<br>
+                        $\ell = \frac{3}{1-0.5} = 6$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 2 :</strong> Définir $v_n$<br>
+                        $v_n = u_n - 6$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 3 :</strong> Calculer $v_0$<br>
+                        $v_0 = u_0 - \ell = 2 - 6 = -4$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 4 :</strong> Formule de $v_n$<br>
+                        $v_n = -4 \times (0.5)^n$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 4: Formule Explicite -->
+        <div class="branch-modal-overlay" id="modal4">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal4')">✕ Fermer</button>
+                
+                <h2>📐 Formule Explicite</h2>
+                
+                <h3>Objectif</h3>
+                <p>Exprimer directement $u_n$ en fonction de $n$ (sans calculer tous les termes précédents)</p>
+
+                <h3>🎯 Formule générale</h3>
+                <div class="formula">
+                    $u_n = (u_0 - \ell) \cdot a^n + \ell$
+                </div>
+                
+                <p><strong>Avec :</strong></p>
+                <ul>
+                    <li>$u_0$ : premier terme</li>
+                    <li>$\ell = \frac{b}{1-a}$ : point fixe</li>
+                    <li>$a$ : coefficient multiplicatif</li>
+                </ul>
+
+                <h3>📊 Démonstration</h3>
+                <div class="step">
+                    On a : $v_n = u_n - \ell$ et $v_n = v_0 \cdot a^n$
+                </div>
+                <div class="step">
+                    Donc : $u_n - \ell = v_0 \cdot a^n$
+                </div>
+                <div class="step">
+                    Or $v_0 = u_0 - \ell$, donc :<br>
+                    $u_n - \ell = (u_0 - \ell) \cdot a^n$
+                </div>
+                <div class="step">
+                    Finalement : $u_n = (u_0 - \ell) \cdot a^n + \ell$ ✓
+                </div>
+
+                <div class="example">
+                    <h4>📝 Exemple complet</h4>
+                    <p>Soit $u_{n+1} = 0.5 \cdot u_n + 3$ avec $u_0 = 2$</p>
+                    <div class="step">
+                        <strong>Étape 1 :</strong> Point fixe<br>
+                        $\ell = \frac{3}{1-0.5} = 6$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 2 :</strong> Appliquer la formule<br>
+                        $u_n = (u_0 - \ell) \cdot a^n + \ell$<br>
+                        $u_n = (2 - 6) \cdot (0.5)^n + 6$<br>
+                        $u_n = -4 \cdot (0.5)^n + 6$
+                    </div>
+                    <div class="step">
+                        <strong>Vérification :</strong><br>
+                        $u_0 = -4 \cdot (0.5)^0 + 6 = -4 + 6 = 2$ ✓<br>
+                        $u_1 = -4 \cdot (0.5)^1 + 6 = -2 + 6 = 4$ ✓
+                    </div>
+                </div>
+
+                <h3>💡 Applications</h3>
+                <ul>
+                    <li>Calculer directement $u_{100}$ sans calculer $u_1, u_2, ..., u_{99}$</li>
+                    <li>Étudier le comportement de la suite quand $n \to +\infty$</li>
+                    <li>Comparer deux termes éloignés</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Modal 5: Méthode de Résolution -->
+        <div class="branch-modal-overlay" id="modal5">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal5')">✕ Fermer</button>
+                
+                <h2>✍️ Méthode de Résolution Complète</h2>
+                
+                <h3>📋 Les 5 étapes à suivre</h3>
+
+                <div class="method-card">
+                    <h4>Étape 1 : Identifier $a$, $b$ et $u_0$</h4>
+                    <ul>
+                        <li>Écrire la relation sous la forme : $u_{n+1} = a \cdot u_n + b$</li>
+                        <li>Repérer les valeurs de $a$ et $b$</li>
+                        <li>Noter la valeur du premier terme $u_0$</li>
+                    </ul>
+                    <div class="tip">💡 Vérifier que $a \neq 1$ et $b \neq 0$</div>
+                </div>
+
+                <div class="method-card">
+                    <h4>Étape 2 : Calculer le point fixe $\ell$</h4>
+                    <div class="formula">$\ell = \frac{b}{1-a}$</div>
+                    <ul>
+                        <li>Appliquer la formule directement</li>
+                        <li>Simplifier au maximum</li>
+                    </ul>
+                </div>
+
+                <div class="method-card">
+                    <h4>Étape 3 : Définir la suite auxiliaire $(v_n)$</h4>
+                    <div class="formula">$v_n = u_n - \ell$</div>
+                    <ul>
+                        <li>Calculer $v_0 = u_0 - \ell$</li>
+                        <li>$(v_n)$ est géométrique de raison $a$</li>
+                    </ul>
+                </div>
+
+                <div class="method-card">
+                    <h4>Étape 4 : Exprimer $v_n$ en fonction de $n$</h4>
+                    <div class="formula">$v_n = v_0 \cdot a^n$</div>
+                    <ul>
+                        <li>Utiliser la formule de la suite géométrique</li>
+                        <li>Remplacer $v_0$ par sa valeur</li>
+                    </ul>
+                </div>
+
+                <div class="method-card">
+                    <h4>Étape 5 : Revenir à $u_n$</h4>
+                    <div class="formula">$u_n = v_n + \ell$</div>
+                    <ul>
+                        <li>Remplacer $v_n$ par son expression</li>
+                        <li>Obtenir : $u_n = (u_0 - \ell) \cdot a^n + \ell$</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <h4>📝 Exercice type corrigé</h4>
+                    <p><strong>Énoncé :</strong> On définit la suite $(u_n)$ par $u_{n+1} = 2u_n - 5$ avec $u_0 = 10$</p>
+                    <p>Exprimer $u_n$ en fonction de $n$.</p>
+                    
+                    <div class="step">
+                        <strong>Étape 1 :</strong> Identification<br>
+                        $a = 2$, $b = -5$, $u_0 = 10$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 2 :</strong> Point fixe<br>
+                        $\ell = \frac{-5}{1-2} = \frac{-5}{-1} = 5$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 3 :</strong> Suite auxiliaire<br>
+                        $v_n = u_n - 5$<br>
+                        $v_0 = u_0 - 5 = 10 - 5 = 5$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 4 :</strong> Expression de $v_n$<br>
+                        $v_n = 5 \times 2^n$
+                    </div>
+                    <div class="step">
+                        <strong>Étape 5 :</strong> Expression de $u_n$<br>
+                        $u_n = v_n + 5 = 5 \times 2^n + 5 = 5(2^n + 1)$
+                    </div>
+                    <div class="tip">
+                        <strong>Réponse finale :</strong> $u_n = 5 \times 2^n + 5$ ou $u_n = 5(2^n + 1)$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 6: Comportement & Convergence -->
+        <div class="branch-modal-overlay" id="modal6">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal6')">✕ Fermer</button>
+                
+                <h2>📊 Comportement & Convergence</h2>
+                
+                <h3>Principe</h3>
+                <p>Le comportement de $(u_n)$ dépend uniquement de la valeur de $|a|$ !</p>
+                
+                <div class="formula">
+                    $u_n = (u_0 - \ell) \cdot a^n + \ell$
+                </div>
+
+                <h3>📐 Étude de la limite</h3>
+
+                <div class="notion-card">
+                    <h4>Cas 1 : $|a| < 1$ (Convergence)</h4>
+                    <ul>
+                        <li>$\lim_{n \to +\infty} a^n = 0$</li>
+                        <li>Donc : $\lim_{n \to +\infty} u_n = \ell$</li>
+                        <li>La suite <strong>converge vers le point fixe</strong></li>
+                    </ul>
+                    <div class="tip">💡 Exemple : $a = 0.5$ → la suite converge vers $\ell$</div>
+                </div>
+
+                <div class="notion-card">
+                    <h4>Cas 2 : $|a| > 1$ (Divergence)</h4>
+                    <ul>
+                        <li>$\lim_{n \to +\infty} |a^n| = +\infty$</li>
+                        <li>La suite <strong>diverge</strong> (sauf si $u_0 = \ell$)</li>
+                    </ul>
+                    <div class="tip">💡 Exemple : $a = 2$ → la suite diverge vers $\pm\infty$</div>
+                </div>
+
+                <div class="notion-card">
+                    <h4>Cas 3 : $a = -1$</h4>
+                    <ul>
+                        <li>$(-1)^n$ alterne entre $-1$ et $+1$</li>
+                        <li>La suite <strong>ne converge pas</strong></li>
+                        <li>Elle oscille entre deux valeurs</li>
+                    </ul>
+                </div>
+
+                <div class="notion-card">
+                    <h4>Cas 4 : $a = 1$</h4>
+                    <ul>
+                        <li>Ce n'est plus une suite arithmético-géométrique</li>
+                        <li>C'est une <strong>suite arithmétique</strong></li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Tableau récapitulatif</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <tr style="background: #667eea; color: white;">
+                        <th style="padding: 12px; border: 1px solid #ddd;">Valeur de $a$</th>
+                        <th style="padding: 12px; border: 1px solid #ddd;">Comportement</th>
+                        <th style="padding: 12px; border: 1px solid #ddd;">Limite</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;">$0 < |a| < 1$</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Convergence</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">$\ell$</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 10px; border: 1px solid #ddd;">$|a| > 1$</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Divergence</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">$\pm\infty$</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;">$a = -1$</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Oscillation</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Pas de limite</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 10px; border: 1px solid #ddd;">$a = 1$</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Suite arithmétique</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Variable</td>
+                    </tr>
+                </table>
+
+                <div class="example">
+                    <h4>📝 Exemple 1 : Convergence</h4>
+                    <p>$u_{n+1} = 0.5 \cdot u_n + 3$ avec $u_0 = 2$</p>
+                    <div class="step">
+                        $a = 0.5$, donc $|a| = 0.5 < 1$
+                    </div>
+                    <div class="step">
+                        Point fixe : $\ell = \frac{3}{1-0.5} = 6$
+                    </div>
+                    <div class="step">
+                        <strong>Conclusion :</strong> La suite converge vers $\ell = 6$
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>📝 Exemple 2 : Divergence</h4>
+                    <p>$u_{n+1} = 2u_n - 5$ avec $u_0 = 10$</p>
+                    <div class="step">
+                        $a = 2$, donc $|a| = 2 > 1$
+                    </div>
+                    <div class="step">
+                        <strong>Conclusion :</strong> La suite diverge vers $+\infty$<br>
+                        (car $u_0 - \ell = 10 - 5 = 5 > 0$)
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Modal Carte Globale -->
@@ -371,50 +949,53 @@ Aussi<!DOCTYPE html>
                     
                     <div class="notion-card">
                         <h4>1. Définition et reconnaissance</h4>
-                        <div class="formula">uₙ₊₁ = a·uₙ + b</div>
+                        <div class="formula">$u_{n+1} = a \cdot u_n + b$</div>
                         <ul>
-                            <li>avec <strong>a ≠ 1</strong> et <strong>b ≠ 0</strong></li>
-                            <li>Si a = 1 → suite arithmétique</li>
-                            <li>Si b = 0 → suite géométrique</li>
+                            <li>avec <strong>$a \neq 1$</strong> et <strong>$b \neq 0$</strong></li>
+                            <li>Si $a = 1$ → suite arithmétique</li>
+                            <li>Si $b = 0$ → suite géométrique</li>
                         </ul>
-                        <div class="tip">💡 Bien identifier les valeurs de a, b et u₀</div>
+                        <div class="tip">💡 Bien identifier les valeurs de $a$, $b$ et $u_0$</div>
                     </div>
 
                     <div class="notion-card">
-                        <h4>2. Point fixe ℓ</h4>
-                        <div class="formula">ℓ = b / (1 - a)</div>
+                        <h4>2. Point fixe $\ell$</h4>
+                        <div class="formula">$\ell = \frac{b}{1 - a}$</div>
                         <ul>
-                            <li>C'est la solution de : ℓ = a·ℓ + b</li>
-                            <li>Si la suite converge, elle converge vers ℓ</li>
+                            <li>C'est la solution de : $\ell = a \cdot \ell + b$</li>
+                            <li>Si la suite converge, elle converge vers $\ell$</li>
                         </ul>
-                        <div class="tip">💡 Toujours calculer ℓ en premier !</div>
+                        <div class="tip">💡 Toujours calculer $\ell$ en premier !</div>
                     </div>
 
                     <div class="notion-card">
                         <h4>3. Suite auxiliaire</h4>
-                        <div class="formula">vₙ = uₙ - ℓ</div>
+                        <div class="formula">$v_n = u_n - \ell$</div>
                         <ul>
-                            <li>(vₙ) est une suite <strong>géométrique</strong> de raison a</li>
-                            <li>vₙ₊₁ = a·vₙ</li>
-                            <li>vₙ = v₀ × aⁿ = (u₀ - ℓ) × aⁿ</li>
+                            <li>$(v_n)$ est une suite <strong>géométrique</strong> de raison $a$</li>
+                            <li>$v_{n+1} = a \cdot v_n$</li>
+                            <li>$v_n = v_0 \times a^n = (u_0 - \ell) \times a^n$</li>
+                        </ul>
+                        <div class="tip">💡 C'est la transformation magique qui simplifie tout !</div>
+                    </div>
+
+                    <div class="notion-card">
+                        <h4>4. Formule explicite</h4>
+                        <div class="formula">$u_n = (u_0 - \ell) \cdot a^n + \ell$</div>
+                        <ul>
+                            <li>Permet de calculer directement $u_n$ sans passer par tous les termes</li>
+                            <li>Se démontre en utilisant $u_n = v_n + \ell$</li>
                         </ul>
                     </div>
 
                     <div class="notion-card">
-                        <h4>4. Formule explicite ⭐</h4>
-                        <div class="formula" style="background: #ffe6e6;">uₙ = (u₀ - ℓ) × aⁿ + ℓ</div>
-                        <div class="tip">🔥 LA FORMULE À CONNAÎTRE PAR CŒUR !</div>
-                    </div>
-
-                    <div class="notion-card">
-                        <h4>5. Comportement selon a</h4>
+                        <h4>5. Convergence</h4>
                         <ul>
-                            <li><strong>|a| < 1 :</strong> la suite converge vers ℓ</li>
-                            <li><strong>a > 1 :</strong> la suite diverge (vers +∞ ou -∞)</li>
-                            <li><strong>a < -1 :</strong> la suite diverge en oscillant</li>
-                            <li><strong>a = -1 :</strong> la suite oscille entre deux valeurs</li>
+                            <li><strong>Si $|a| < 1$ :</strong> La suite converge vers $\ell$</li>
+                            <li><strong>Si $|a| > 1$ :</strong> La suite diverge</li>
+                            <li><strong>Si $a = -1$ :</strong> La suite oscille</li>
                         </ul>
-                        <div class="tip">💡 Retenir : convergence ssi -1 < a < 1</div>
+                        <div class="tip">💡 Tout dépend de $|a|$ !</div>
                     </div>
                 </div>
 
@@ -422,67 +1003,55 @@ Aussi<!DOCTYPE html>
                     <h3>📝 MÉTHODES POUR RÉUSSIR TON DS</h3>
 
                     <div class="method-card">
-                        <h4>Méthode 1 : Trouver la formule explicite de uₙ</h4>
+                        <h4>Méthode 1 : Reconnaître une suite arithmético-géométrique</h4>
                         <ul class="checklist">
-                            <li><strong>ÉTAPE 1 :</strong> Calculer le point fixe ℓ = b/(1-a)</li>
-                            <li><strong>ÉTAPE 2 :</strong> Poser vₙ = uₙ - ℓ</li>
-                            <li><strong>ÉTAPE 3 :</strong> Montrer que vₙ₊₁ = a·vₙ (démonstration)</li>
-                            <li><strong>ÉTAPE 4 :</strong> En déduire vₙ = (u₀ - ℓ) × aⁿ</li>
-                            <li><strong>ÉTAPE 5 :</strong> Conclure : uₙ = vₙ + ℓ = (u₀ - ℓ)aⁿ + ℓ</li>
-                            <li><strong>ÉTAPE 6 :</strong> Vérifier avec u₀ et u₁</li>
+                            <li>Vérifier que la relation est de la forme $u_{n+1} = a \cdot u_n + b$</li>
+                            <li>Identifier les valeurs de $a$ et $b$</li>
+                            <li>Vérifier que $a \neq 1$ et $b \neq 0$</li>
+                            <li>Noter la valeur de $u_0$</li>
                         </ul>
-                        <div class="tip">⚠️ Ne JAMAIS oublier le "+ ℓ" à la fin !</div>
                     </div>
 
                     <div class="method-card">
-                        <h4>Méthode 2 : Calculer un terme de la suite</h4>
+                        <h4>Méthode 2 : Trouver la formule explicite</h4>
                         <ul class="checklist">
-                            <li>Si formule explicite trouvée : utiliser uₙ = (u₀ - ℓ)aⁿ + ℓ</li>
-                            <li>Sinon, utiliser la récurrence : uₙ₊₁ = a·uₙ + b</li>
-                            <li>Calculer terme par terme jusqu'au rang demandé</li>
-                            <li>Vérifier la cohérence des résultats</li>
+                            <li>Calculer le point fixe : $\ell = \frac{b}{1-a}$</li>
+                            <li>Définir la suite auxiliaire : $v_n = u_n - \ell$</li>
+                            <li>Calculer $v_0 = u_0 - \ell$</li>
+                            <li>Écrire $v_n = v_0 \cdot a^n$</li>
+                            <li>Revenir à $u_n$ : $u_n = v_n + \ell = (u_0 - \ell) \cdot a^n + \ell$</li>
                         </ul>
                     </div>
 
                     <div class="method-card">
                         <h4>Méthode 3 : Étudier la convergence</h4>
                         <ul class="checklist">
-                            <li>Calculer le point fixe ℓ</li>
-                            <li>Déterminer la valeur de a</li>
-                            <li><strong>Si -1 < a < 1 :</strong> la suite converge vers ℓ</li>
-                            <li><strong>Sinon :</strong> la suite diverge</li>
-                            <li>Justifier : "aⁿ → 0 donc uₙ → ℓ" ou "aⁿ → ±∞"</li>
+                            <li>Calculer le point fixe $\ell$</li>
+                            <li>Déterminer la valeur de $|a|$</li>
+                            <li>Si $|a| < 1$ : conclure que $\lim u_n = \ell$</li>
+                            <li>Si $|a| > 1$ : la suite diverge</li>
+                            <li>Justifier avec $\lim a^n$ quand $n \to +\infty$</li>
                         </ul>
                     </div>
 
                     <div class="method-card">
-                        <h4>Méthode 4 : Démontrer que vₙ est géométrique</h4>
+                        <h4>Méthode 4 : Calculer un terme précis</h4>
                         <ul class="checklist">
-                            <li>Calculer vₙ₊₁ en fonction de uₙ₊₁</li>
-                            <li>Remplacer uₙ₊₁ par a·uₙ + b</li>
-                            <li>Factoriser pour faire apparaître (uₙ - ℓ)</li>
-                            <li>Utiliser le fait que ℓ = a·ℓ + b</li>
-                            <li>Conclure : vₙ₊₁ = a·vₙ donc (vₙ) est géométrique de raison a</li>
+                            <li>Trouver d'abord la formule explicite $u_n = (u_0 - \ell) \cdot a^n + \ell$</li>
+                            <li>Remplacer $n$ par la valeur demandée</li>
+                            <li>Utiliser la calculatrice pour $a^n$ si $n$ est grand</li>
+                            <li>Arrondir si nécessaire</li>
                         </ul>
                     </div>
 
                     <div class="method-card">
-                        <h4>Méthode 5 : Étudier la monotonie</h4>
+                        <h4>Méthode 5 : Démontrer par récurrence</h4>
                         <ul class="checklist">
-                            <li>Calculer uₙ₊₁ - uₙ</li>
-                            <li>OU étudier le signe de uₙ₊₁ - uₙ = (a-1)uₙ + b</li>
-                            <li>OU comparer uₙ avec ℓ selon que u₀ > ℓ ou u₀ < ℓ</li>
-                            <li>Attention : si a < 0, la suite n'est ni croissante ni décroissante</li>
-                        </ul>
-                    </div>
-
-                    <div class="method-card">
-                        <h4>Méthode 6 : Résoudre une inéquation uₙ > k</h4>
-                        <ul class="checklist">
-                            <li>Utiliser la formule explicite : (u₀ - ℓ)aⁿ + ℓ > k</li>
-                            <li>Isoler aⁿ : aⁿ > (k - ℓ)/(u₀ - ℓ)</li>
-                            <li>Prendre le logarithme (attention au sens selon a)</li>
-                            <li>Résoudre pour n</li>
+                            <li><strong>Initialisation :</strong> Vérifier que $u_0$ vérifie la propriété</li>
+                            <li><strong>Hérédité :</strong> Supposer la propriété vraie au rang $n$</li>
+                            <li>Utiliser la relation de récurrence $u_{n+1} = a \cdot u_n + b$</li>
+                            <li>Montrer que la propriété est vraie au rang $n+1$</li>
+                            <li><strong>Conclusion :</strong> La propriété est vraie pour tout $n$</li>
                         </ul>
                     </div>
                 </div>
@@ -490,308 +1059,44 @@ Aussi<!DOCTYPE html>
                 <div class="modal-section">
                     <h3>⚡ ASTUCES POUR LE DS</h3>
                     <div class="tip">
-                        <strong>✓ Mémoriser la formule magique :</strong> uₙ = (u₀ - ℓ)aⁿ + ℓ
+                        <strong>✓ Calculer TOUJOURS le point fixe en premier</strong> - C'est la clé de tout !
                     </div>
                     <div class="tip">
-                        <strong>✓ Calculer ℓ dès le départ :</strong> c'est la clé de tout l'exercice
+                        <strong>✓ Vérifier que $a \neq 1$ et $b \neq 0$</strong> pour confirmer que c'est bien arithmético-géométrique
                     </div>
                     <div class="tip">
-                        <strong>✓ Vérifier avec u₀ et u₁ :</strong> ta formule doit donner les bonnes valeurs
+                        <strong>✓ La suite auxiliaire est TOUJOURS géométrique</strong> de raison $a$
                     </div>
                     <div class="tip">
-                        <strong>✓ Ne pas confondre a et b :</strong> bien identifier uₙ₊₁ = <span class="highlight">a</span>·uₙ + <span class="highlight">b</span>
+                        <strong>✓ Pour la convergence, regarder $|a|$</strong> : $< 1$ converge, $> 1$ diverge
                     </div>
                     <div class="tip">
-                        <strong>✓ Faire apparaître (uₙ - ℓ) :</strong> c'est le réflexe pour montrer que vₙ est géométrique
+                        <strong>✓ Vérifier la formule avec $u_0$ et $u_1$</strong> pour éviter les erreurs de calcul
                     </div>
                     <div class="tip">
-                        <strong>✓ Attention au signe de a :</strong> détermine le comportement de la suite
+                        <strong>✓ Penser à simplifier les fractions</strong> pour le point fixe et la formule finale
                     </div>
                     <div class="tip">
-                        <strong>✓ Convergence = |a| < 1 :</strong> sinon divergence !
-                    </div>
-                    <div class="tip">
-                        <strong>✓ Calcul de u₀ - ℓ :</strong> ne pas oublier les parenthèses si négatif !
+                        <strong>✓ En cas de doute, revenir à la définition</strong> : $v_n = u_n - \ell$ et $(v_n)$ géométrique
                     </div>
                 </div>
 
                 <div class="modal-section">
-                    <h3>🚨 PIÈGES À ÉVITER</h3>
-                    <div class="example">
-                        <strong>❌ Piège 1 :</strong> Oublier le "+ ℓ" dans la formule finale
+                    <h3>⚠️ ERREURS À ÉVITER</h3>
+                    <div class="tip" style="border-color: #e74c3c; background: #ffe5e5;">
+                        <strong>✗ Oublier de calculer le point fixe</strong> avant de définir la suite auxiliaire
                     </div>
-                    <div class="example">
-                        <strong>❌ Piège 2 :</strong> Confondre a et (1-a) dans le calcul de ℓ
+                    <div class="tip" style="border-color: #e74c3c; background: #ffe5e5;">
+                        <strong>✗ Confondre $u_n$ et $v_n$</strong> dans les calculs
                     </div>
-                    <div class="example">
-                        <strong>❌ Piège 3 :</strong> Dire qu'une suite converge sans vérifier |a| < 1
+                    <div class="tip" style="border-color: #e74c3c; background: #ffe5e5;">
+                        <strong>✗ Oublier le "$+ \ell$"</strong> à la fin de la formule de $u_n$
                     </div>
-                    <div class="example">
-                        <strong>❌ Piège 4 :</strong> Se tromper dans le calcul de (u₀ - ℓ)
+                    <div class="tip" style="border-color: #e74c3c; background: #ffe5e5;">
+                        <strong>✗ Dire que la suite converge sans vérifier $|a| < 1$</strong>
                     </div>
-                    <div class="example">
-                        <strong>❌ Piège 5 :</strong> Oublier de justifier que vₙ est géométrique
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="mind-map">
-            <div class="central-node" onclick="openModal()">
-                SUITES<br>ARITHMÉTICO-<br>GÉOMÉTRIQUES<br>
-                <span style="font-size: 0.7em;">(Première)</span><br>
-                <span style="font-size: 0.5em; opacity: 0.9;">📋 Cliquer pour la carte globale</span>
-            </div>
-
-            <div class="branches">
-                <!-- Branche 1: Définition -->
-                <div class="branch branch-1">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>📚 Définition</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Suite arithmético-géométrique :</strong></p>
-                            <p>Une suite (uₙ) définie par une relation de récurrence de la forme :</p>
-                            <div class="formula">
-                                uₙ₊₁ = a·uₙ + b
-                            </div>
-                            <p>où a ≠ 1 et b ≠ 0</p>
-                            
-                            <div class="example">
-                                <strong>Exemples :</strong><br>
-                                • uₙ₊₁ = 2uₙ + 3, u₀ = 1<br>
-                                • uₙ₊₁ = 0,5uₙ + 4, u₀ = 10<br>
-                                • uₙ₊₁ = -3uₙ + 7, u₀ = 2
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Origine du nom :</strong></p>
-                            <p>Combine les propriétés :</p>
-                            <ul>
-                                <li><strong>Géométrique</strong> : multiplication par a</li>
-                                <li><strong>Arithmétique</strong> : ajout de b</li>
-                            </ul>
-                            
-                            <p style="margin-top: 15px;"><strong>Cas exclus :</strong></p>
-                            <ul>
-                                <li>Si a = 1 : suite arithmétique (uₙ₊₁ = uₙ + b)</li>
-                                <li>Si b = 0 : suite géométrique (uₙ₊₁ = a·uₙ)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 2: Point fixe -->
-                <div class="branch branch-2">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>🎯 Point Fixe</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Définition du point fixe ℓ :</strong></p>
-                            <p>Le point fixe est la solution de :</p>
-                            <div class="formula">
-                                ℓ = a·ℓ + b
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Résolution :</strong></p>
-                            <div class="formula">
-                                ℓ = b / (1 - a)
-                            </div>
-                            <p>(avec a ≠ 1)</p>
-                            
-                            <div class="example">
-                                <strong>Exemple 1 :</strong><br>
-                                uₙ₊₁ = 2uₙ + 3<br>
-                                ℓ = 2ℓ + 3<br>
-                                ℓ - 2ℓ = 3<br>
-                                -ℓ = 3<br>
-                                <strong>ℓ = -3</strong>
-                            </div>
-                            
-                            <div class="example">
-                                <strong>Exemple 2 :</strong><br>
-                                uₙ₊₁ = 0,5uₙ + 4<br>
-                                ℓ = 0,5ℓ + 4<br>
-                                0,5ℓ = 4<br>
-                                <strong>ℓ = 8</strong>
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Interprétation :</strong></p>
-                            <p>Si la suite converge, elle converge vers ℓ</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 3: Suite auxiliaire -->
-                <div class="branch branch-3">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>🔄 Suite Auxiliaire</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Méthode de transformation :</strong></p>
-                            <p>On pose la suite auxiliaire :</p>
-                            <div class="formula">
-                                vₙ = uₙ - ℓ
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Propriété fondamentale :</strong></p>
-                            <p>(vₙ) est une suite géométrique de raison a</p>
-                            <div class="formula">
-                                vₙ₊₁ = a·vₙ
-                            </div>
-                            
-                            <div class="method">
-                                <strong>Démonstration :</strong><br>
-                                vₙ₊₁ = uₙ₊₁ - ℓ<br>
-                                = (a·uₙ + b) - ℓ<br>
-                                = a·uₙ + b - (a·ℓ + b)<br>
-                                = a·uₙ - a·ℓ<br>
-                                = a(uₙ - ℓ)<br>
-                                = a·vₙ
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Terme général de (vₙ) :</strong></p>
-                            <div class="formula">
-                                vₙ = v₀ × aⁿ = (u₀ - ℓ) × aⁿ
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 4: Formule explicite -->
-                <div class="branch branch-4">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>📐 Formule Explicite</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Formule du terme général :</strong></p>
-                            <div class="formula">
-                                uₙ = (u₀ - ℓ) × aⁿ + ℓ
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Dérivation :</strong></p>
-                            <p>Puisque vₙ = uₙ - ℓ, alors :</p>
-                            <div class="formula">
-                                uₙ = vₙ + ℓ = (u₀ - ℓ)aⁿ + ℓ
-                            </div>
-                            
-                            <div class="example">
-                                <strong>Exemple complet :</strong><br>
-                                uₙ₊₁ = 2uₙ + 3, u₀ = 1<br><br>
-                                <strong>Étape 1 :</strong> Point fixe<br>
-                                ℓ = 2ℓ + 3 → ℓ = -3<br><br>
-                                <strong>Étape 2 :</strong> Formule<br>
-                                uₙ = (1 - (-3)) × 2ⁿ + (-3)<br>
-                                <strong>uₙ = 4 × 2ⁿ - 3</strong><br><br>
-                                <strong>Vérification :</strong><br>
-                                u₀ = 4×1 - 3 = 1 ✓<br>
-                                u₁ = 4×2 - 3 = 5 ✓<br>
-                                u₂ = 4×4 - 3 = 13 ✓
-                            </div>
-                            
-                            <div class="example">
-                                <strong>Autre exemple :</strong><br>
-                                uₙ₊₁ = 0,5uₙ + 4, u₀ = 10<br><br>
-                                Point fixe : ℓ = 8<br>
-                                Formule : uₙ = (10 - 8) × 0,5ⁿ + 8<br>
-                                <strong>uₙ = 2 × 0,5ⁿ + 8</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 5: Méthode de résolution -->
-                <div class="branch branch-5">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>🛠️ Méthode de Résolution</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Les 4 étapes :</strong></p>
-                            
-                            <div class="method">
-                                <strong>ÉTAPE 1 : Trouver le point fixe</strong><br>
-                                Résoudre : ℓ = a·ℓ + b<br>
-                                → ℓ = b/(1-a)
-                            </div>
-                            
-                            <div class="method">
-                                <strong>ÉTAPE 2 : Définir la suite auxiliaire</strong><br>
-                                Poser : vₙ = uₙ - ℓ<br>
-                                Montrer que vₙ₊₁ = a·vₙ
-                            </div>
-                            
-                            <div class="method">
-                                <strong>ÉTAPE 3 : Trouver vₙ</strong><br>
-                                (vₙ) est géométrique de raison a<br>
-                                → vₙ = v₀ × aⁿ = (u₀ - ℓ) × aⁿ
-                            </div>
-                            
-                            <div class="method">
-                                <strong>ÉTAPE 4 : Déduire uₙ</strong><br>
-                                uₙ = vₙ + ℓ<br>
-                                → <span class="highlight">uₙ = (u₀ - ℓ)aⁿ + ℓ</span>
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>⚠️ Points d'attention :</strong></p>
-                            <ul>
-                                <li>Vérifier que a ≠ 1 et b ≠ 0</li>
-                                <li>Calculer correctement (u₀ - ℓ)</li>
-                                <li>Ne pas oublier le "+ ℓ" final</li>
-                                <li>Vérifier avec les premiers termes</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Branche 6: Comportement et convergence -->
-                <div class="branch branch-6">
-                    <div class="branch-node" onclick="toggleContent(this)">
-                        <h3>📊 Comportement & Convergence</h3>
-                        <div class="branch-content">
-                            <p><strong class="important">Selon la valeur de a :</strong></p>
-                            
-                            <div class="method">
-                                <strong>Si |a| < 1 :</strong><br>
-                                • aⁿ → 0 quand n → +∞<br>
-                                • (uₙ) converge vers ℓ<br>
-                                • <span class="highlight">lim uₙ = ℓ</span>
-                            </div>
-                            
-                            <div class="example">
-                                Exemple : uₙ₊₁ = 0,5uₙ + 4<br>
-                                a = 0,5, ℓ = 8<br>
-                                La suite converge vers 8
-                            </div>
-                            
-                            <div class="method">
-                                <strong>Si a > 1 :</strong><br>
-                                • aⁿ → +∞<br>
-                                • Si u₀ > ℓ : uₙ → +∞<br>
-                                • Si u₀ < ℓ : uₙ → -∞
-                            </div>
-                            
-                            <div class="method">
-                                <strong>Si a < -1 :</strong><br>
-                                • aⁿ oscille et croît en valeur absolue<br>
-                                • La suite diverge (pas de limite)
-                            </div>
-                            
-                            <div class="method">
-                                <strong>Si a = -1 :</strong><br>
-                                • La suite oscille entre deux valeurs<br>
-                                • Pas de limite (sauf si u₀ = ℓ)
-                            </div>
-                            
-                            <p style="margin-top: 15px;"><strong>Monotonie :</strong></p>
-                            <ul>
-                                <li>Si 0 < a < 1 et u₀ > ℓ : décroissante vers ℓ</li>
-                                <li>Si 0 < a < 1 et u₀ < ℓ : croissante vers ℓ</li>
-                                <li>Si a > 1 : monotone (croissante ou décroissante)</li>
-                                <li>Si a < 0 : ni croissante ni décroissante</li>
-                            </ul>
-                            
-                            <div class="example">
-                                <strong>Résumé pratique :</strong><br>
-                                • <span class="important">-1 < a < 1</span> : converge vers ℓ<br>
-                                • <span class="important">a > 1 ou a < -1</span> : diverge<br>
-                                • <span class="important">a = 1</span> : arithmétique<br>
-                                • <span class="important">a = -1</span> : oscille
-                            </div>
-                        </div>
+                    <div class="tip" style="border-color: #e74c3c; background: #ffe5e5;">
+                        <strong>✗ Utiliser la formule du point fixe avec $a = 1$</strong> (division par zéro !)
                     </div>
                 </div>
             </div>
@@ -799,19 +1104,14 @@ Aussi<!DOCTYPE html>
     </div>
 
     <script>
-        function toggleContent(element) {
-            const content = element.querySelector('.branch-content');
-            const allContents = document.querySelectorAll('.branch-content');
-            
-            // Fermer tous les autres contenus
-            allContents.forEach(c => {
-                if (c !== content) {
-                    c.classList.remove('active');
-                }
-            });
-            
-            // Toggle le contenu actuel
-            content.classList.toggle('active');
+        function openBranchModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBranchModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function openModal() {
@@ -824,48 +1124,25 @@ Aussi<!DOCTYPE html>
             document.body.style.overflow = 'auto';
         }
 
-        // Fermer le modal en cliquant sur l'overlay
-        document.addEventListener('DOMContentLoaded', () => {
-            const overlay = document.getElementById('modalOverlay');
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    closeModal();
-                }
-            });
-
-            // Fermer avec la touche Échap
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
-        });
-
-        // Animation d'entrée
-        window.addEventListener('load', () => {
-            const branches = document.querySelectorAll('.branch');
-            branches.forEach((branch, index) => {
-                setTimeout(() => {
-                    branch.style.opacity = '0';
-                    branch.style.transform = 'scale(0.8)';
-                    branch.style.transition = 'all 0.5s ease';
-                    setTimeout(() => {
-                        branch.style.opacity = '1';
-                        branch.style.transform = 'scale(1)';
-                    }, 50);
-                }, index * 100);
-            });
-        });
-
-        // Animation du nœud central
-        const centralNode = document.querySelector('.central-node');
-        centralNode.addEventListener('click', () => {
-            const allContents = document.querySelectorAll('.branch-content');
-            const anyOpen = Array.from(allContents).some(c => c.classList.contains('active'));
-            
-            if (anyOpen) {
-                allContents.forEach(c => c.classList.remove('active'));
+        // Fermer avec Échap
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Fermer tous les modals
+                document.querySelectorAll('.branch-modal-overlay, .modal-overlay').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
             }
+        });
+
+        // Fermer en cliquant sur l'overlay
+        document.querySelectorAll('.branch-modal-overlay, .modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
         });
     </script>
 </body>

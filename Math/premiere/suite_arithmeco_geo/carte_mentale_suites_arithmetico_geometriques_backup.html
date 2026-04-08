@@ -1,0 +1,872 @@
+Aussi<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Mentale - Suites Arithmético-Géométriques (Première)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .mind-map {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 80vh;
+        }
+
+        .central-node {
+            background: linear-gradient(135deg, #fa8bff 0%, #2bd2ff 50%, #2bff88 100%);
+            color: white;
+            padding: 40px 50px;
+            border-radius: 50%;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+
+        .central-node:hover {
+            transform: scale(1.05);
+        }
+
+        .branches {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .branch {
+            position: absolute;
+            pointer-events: all;
+        }
+
+        .branch-node {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+            min-width: 220px;
+        }
+
+        .branch-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .branch-node h3 {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .branch-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .branch-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .branch-1 { top: 8%; left: 12%; }
+        .branch-1 .branch-node { border-color: #ff6b6b; }
+
+        .branch-2 { top: 12%; right: 10%; }
+        .branch-2 .branch-node { border-color: #4ecdc4; }
+
+        .branch-3 { top: 45%; right: 3%; }
+        .branch-3 .branch-node { border-color: #45b7d1; }
+
+        .branch-4 { bottom: 12%; right: 12%; }
+        .branch-4 .branch-node { border-color: #f9ca24; }
+
+        .branch-5 { bottom: 8%; left: 10%; }
+        .branch-5 .branch-node { border-color: #6c5ce7; }
+
+        .branch-6 { top: 45%; left: 3%; }
+        .branch-6 .branch-node { border-color: #a29bfe; }
+
+        .formula {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-align: center;
+            color: #2d3436;
+        }
+
+        .example {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .important {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .method {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .instructions {
+            background: rgba(255,255,255,0.95);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        /* Modal Carte Globale */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .modal-section {
+            margin: 25px 0;
+        }
+
+        .modal-section h3 {
+            color: #fa8bff;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            border-left: 5px solid #2bd2ff;
+            padding-left: 15px;
+        }
+
+        .modal-section h4 {
+            color: #4ecdc4;
+            font-size: 1.2em;
+            margin: 15px 0 10px 0;
+        }
+
+        .notion-card {
+            background: linear-gradient(135deg, #fa8bff20 0%, #2bd2ff20 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2bd2ff;
+        }
+
+        .method-card {
+            background: linear-gradient(135deg, #2bff8820 0%, #f9ca2420 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2bff88;
+        }
+
+        .close-modal {
+            position: sticky;
+            top: 10px;
+            float: right;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .close-modal:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .tip {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        @media (max-width: 768px) {
+            .branch {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                bottom: auto !important;
+                margin: 15px;
+            }
+
+            .mind-map {
+                flex-direction: column;
+            }
+
+            .central-node {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Carte Mentale - Suites Arithmético-Géométriques</h1>
+        
+        <div class="instructions">
+            <strong>💡 Cliquez sur chaque section</strong> pour découvrir les détails des concepts
+        </div>
+
+        <!-- Modal Carte Globale -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal()">✕ Fermer</button>
+                
+                <div class="modal-header">
+                    <h2>📋 CARTE GLOBALE - SUITES ARITHMÉTICO-GÉOMÉTRIQUES</h2>
+                    <p style="color: #666;">Notions incontournables & Méthodes pour réussir ton DS</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>🎯 LES NOTIONS INCONTOURNABLES</h3>
+                    
+                    <div class="notion-card">
+                        <h4>1. Définition et reconnaissance</h4>
+                        <div class="formula">uₙ₊₁ = a·uₙ + b</div>
+                        <ul>
+                            <li>avec <strong>a ≠ 1</strong> et <strong>b ≠ 0</strong></li>
+                            <li>Si a = 1 → suite arithmétique</li>
+                            <li>Si b = 0 → suite géométrique</li>
+                        </ul>
+                        <div class="tip">💡 Bien identifier les valeurs de a, b et u₀</div>
+                    </div>
+
+                    <div class="notion-card">
+                        <h4>2. Point fixe ℓ</h4>
+                        <div class="formula">ℓ = b / (1 - a)</div>
+                        <ul>
+                            <li>C'est la solution de : ℓ = a·ℓ + b</li>
+                            <li>Si la suite converge, elle converge vers ℓ</li>
+                        </ul>
+                        <div class="tip">💡 Toujours calculer ℓ en premier !</div>
+                    </div>
+
+                    <div class="notion-card">
+                        <h4>3. Suite auxiliaire</h4>
+                        <div class="formula">vₙ = uₙ - ℓ</div>
+                        <ul>
+                            <li>(vₙ) est une suite <strong>géométrique</strong> de raison a</li>
+                            <li>vₙ₊₁ = a·vₙ</li>
+                            <li>vₙ = v₀ × aⁿ = (u₀ - ℓ) × aⁿ</li>
+                        </ul>
+                    </div>
+
+                    <div class="notion-card">
+                        <h4>4. Formule explicite ⭐</h4>
+                        <div class="formula" style="background: #ffe6e6;">uₙ = (u₀ - ℓ) × aⁿ + ℓ</div>
+                        <div class="tip">🔥 LA FORMULE À CONNAÎTRE PAR CŒUR !</div>
+                    </div>
+
+                    <div class="notion-card">
+                        <h4>5. Comportement selon a</h4>
+                        <ul>
+                            <li><strong>|a| < 1 :</strong> la suite converge vers ℓ</li>
+                            <li><strong>a > 1 :</strong> la suite diverge (vers +∞ ou -∞)</li>
+                            <li><strong>a < -1 :</strong> la suite diverge en oscillant</li>
+                            <li><strong>a = -1 :</strong> la suite oscille entre deux valeurs</li>
+                        </ul>
+                        <div class="tip">💡 Retenir : convergence ssi -1 < a < 1</div>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>📝 MÉTHODES POUR RÉUSSIR TON DS</h3>
+
+                    <div class="method-card">
+                        <h4>Méthode 1 : Trouver la formule explicite de uₙ</h4>
+                        <ul class="checklist">
+                            <li><strong>ÉTAPE 1 :</strong> Calculer le point fixe ℓ = b/(1-a)</li>
+                            <li><strong>ÉTAPE 2 :</strong> Poser vₙ = uₙ - ℓ</li>
+                            <li><strong>ÉTAPE 3 :</strong> Montrer que vₙ₊₁ = a·vₙ (démonstration)</li>
+                            <li><strong>ÉTAPE 4 :</strong> En déduire vₙ = (u₀ - ℓ) × aⁿ</li>
+                            <li><strong>ÉTAPE 5 :</strong> Conclure : uₙ = vₙ + ℓ = (u₀ - ℓ)aⁿ + ℓ</li>
+                            <li><strong>ÉTAPE 6 :</strong> Vérifier avec u₀ et u₁</li>
+                        </ul>
+                        <div class="tip">⚠️ Ne JAMAIS oublier le "+ ℓ" à la fin !</div>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Méthode 2 : Calculer un terme de la suite</h4>
+                        <ul class="checklist">
+                            <li>Si formule explicite trouvée : utiliser uₙ = (u₀ - ℓ)aⁿ + ℓ</li>
+                            <li>Sinon, utiliser la récurrence : uₙ₊₁ = a·uₙ + b</li>
+                            <li>Calculer terme par terme jusqu'au rang demandé</li>
+                            <li>Vérifier la cohérence des résultats</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Méthode 3 : Étudier la convergence</h4>
+                        <ul class="checklist">
+                            <li>Calculer le point fixe ℓ</li>
+                            <li>Déterminer la valeur de a</li>
+                            <li><strong>Si -1 < a < 1 :</strong> la suite converge vers ℓ</li>
+                            <li><strong>Sinon :</strong> la suite diverge</li>
+                            <li>Justifier : "aⁿ → 0 donc uₙ → ℓ" ou "aⁿ → ±∞"</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Méthode 4 : Démontrer que vₙ est géométrique</h4>
+                        <ul class="checklist">
+                            <li>Calculer vₙ₊₁ en fonction de uₙ₊₁</li>
+                            <li>Remplacer uₙ₊₁ par a·uₙ + b</li>
+                            <li>Factoriser pour faire apparaître (uₙ - ℓ)</li>
+                            <li>Utiliser le fait que ℓ = a·ℓ + b</li>
+                            <li>Conclure : vₙ₊₁ = a·vₙ donc (vₙ) est géométrique de raison a</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Méthode 5 : Étudier la monotonie</h4>
+                        <ul class="checklist">
+                            <li>Calculer uₙ₊₁ - uₙ</li>
+                            <li>OU étudier le signe de uₙ₊₁ - uₙ = (a-1)uₙ + b</li>
+                            <li>OU comparer uₙ avec ℓ selon que u₀ > ℓ ou u₀ < ℓ</li>
+                            <li>Attention : si a < 0, la suite n'est ni croissante ni décroissante</li>
+                        </ul>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Méthode 6 : Résoudre une inéquation uₙ > k</h4>
+                        <ul class="checklist">
+                            <li>Utiliser la formule explicite : (u₀ - ℓ)aⁿ + ℓ > k</li>
+                            <li>Isoler aⁿ : aⁿ > (k - ℓ)/(u₀ - ℓ)</li>
+                            <li>Prendre le logarithme (attention au sens selon a)</li>
+                            <li>Résoudre pour n</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>⚡ ASTUCES POUR LE DS</h3>
+                    <div class="tip">
+                        <strong>✓ Mémoriser la formule magique :</strong> uₙ = (u₀ - ℓ)aⁿ + ℓ
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Calculer ℓ dès le départ :</strong> c'est la clé de tout l'exercice
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Vérifier avec u₀ et u₁ :</strong> ta formule doit donner les bonnes valeurs
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Ne pas confondre a et b :</strong> bien identifier uₙ₊₁ = <span class="highlight">a</span>·uₙ + <span class="highlight">b</span>
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Faire apparaître (uₙ - ℓ) :</strong> c'est le réflexe pour montrer que vₙ est géométrique
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Attention au signe de a :</strong> détermine le comportement de la suite
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Convergence = |a| < 1 :</strong> sinon divergence !
+                    </div>
+                    <div class="tip">
+                        <strong>✓ Calcul de u₀ - ℓ :</strong> ne pas oublier les parenthèses si négatif !
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>🚨 PIÈGES À ÉVITER</h3>
+                    <div class="example">
+                        <strong>❌ Piège 1 :</strong> Oublier le "+ ℓ" dans la formule finale
+                    </div>
+                    <div class="example">
+                        <strong>❌ Piège 2 :</strong> Confondre a et (1-a) dans le calcul de ℓ
+                    </div>
+                    <div class="example">
+                        <strong>❌ Piège 3 :</strong> Dire qu'une suite converge sans vérifier |a| < 1
+                    </div>
+                    <div class="example">
+                        <strong>❌ Piège 4 :</strong> Se tromper dans le calcul de (u₀ - ℓ)
+                    </div>
+                    <div class="example">
+                        <strong>❌ Piège 5 :</strong> Oublier de justifier que vₙ est géométrique
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mind-map">
+            <div class="central-node" onclick="openModal()">
+                SUITES<br>ARITHMÉTICO-<br>GÉOMÉTRIQUES<br>
+                <span style="font-size: 0.7em;">(Première)</span><br>
+                <span style="font-size: 0.5em; opacity: 0.9;">📋 Cliquer pour la carte globale</span>
+            </div>
+
+            <div class="branches">
+                <!-- Branche 1: Définition -->
+                <div class="branch branch-1">
+                    <div class="branch-node" onclick="toggleContent(this)">
+                        <h3>📚 Définition</h3>
+                        <div class="branch-content">
+                            <p><strong class="important">Suite arithmético-géométrique :</strong></p>
+                            <p>Une suite (uₙ) définie par une relation de récurrence de la forme :</p>
+                            <div class="formula">
+                                uₙ₊₁ = a·uₙ + b
+                            </div>
+                            <p>où a ≠ 1 et b ≠ 0</p>
+                            
+                            <div class="example">
+                                <strong>Exemples :</strong><br>
+                                • uₙ₊₁ = 2uₙ + 3, u₀ = 1<br>
+                                • uₙ₊₁ = 0,5uₙ + 4, u₀ = 10<br>
+                                • uₙ₊₁ = -3uₙ + 7, u₀ = 2
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Origine du nom :</strong></p>
+                            <p>Combine les propriétés :</p>
+                            <ul>
+                                <li><strong>Géométrique</strong> : multiplication par a</li>
+                                <li><strong>Arithmétique</strong> : ajout de b</li>
+                            </ul>
+                            
+                            <p style="margin-top: 15px;"><strong>Cas exclus :</strong></p>
+                            <ul>
+                                <li>Si a = 1 : suite arithmétique (uₙ₊₁ = uₙ + b)</li>
+                                <li>Si b = 0 : suite géométrique (uₙ₊₁ = a·uₙ)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branche 2: Point fixe -->
+                <div class="branch branch-2">
+                    <div class="branch-node" onclick="toggleContent(this)">
+                        <h3>🎯 Point Fixe</h3>
+                        <div class="branch-content">
+                            <p><strong class="important">Définition du point fixe ℓ :</strong></p>
+                            <p>Le point fixe est la solution de :</p>
+                            <div class="formula">
+                                ℓ = a·ℓ + b
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Résolution :</strong></p>
+                            <div class="formula">
+                                ℓ = b / (1 - a)
+                            </div>
+                            <p>(avec a ≠ 1)</p>
+                            
+                            <div class="example">
+                                <strong>Exemple 1 :</strong><br>
+                                uₙ₊₁ = 2uₙ + 3<br>
+                                ℓ = 2ℓ + 3<br>
+                                ℓ - 2ℓ = 3<br>
+                                -ℓ = 3<br>
+                                <strong>ℓ = -3</strong>
+                            </div>
+                            
+                            <div class="example">
+                                <strong>Exemple 2 :</strong><br>
+                                uₙ₊₁ = 0,5uₙ + 4<br>
+                                ℓ = 0,5ℓ + 4<br>
+                                0,5ℓ = 4<br>
+                                <strong>ℓ = 8</strong>
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Interprétation :</strong></p>
+                            <p>Si la suite converge, elle converge vers ℓ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branche 3: Suite auxiliaire -->
+                <div class="branch branch-3">
+                    <div class="branch-node" onclick="toggleContent(this)">
+                        <h3>🔄 Suite Auxiliaire</h3>
+                        <div class="branch-content">
+                            <p><strong class="important">Méthode de transformation :</strong></p>
+                            <p>On pose la suite auxiliaire :</p>
+                            <div class="formula">
+                                vₙ = uₙ - ℓ
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Propriété fondamentale :</strong></p>
+                            <p>(vₙ) est une suite géométrique de raison a</p>
+                            <div class="formula">
+                                vₙ₊₁ = a·vₙ
+                            </div>
+                            
+                            <div class="method">
+                                <strong>Démonstration :</strong><br>
+                                vₙ₊₁ = uₙ₊₁ - ℓ<br>
+                                = (a·uₙ + b) - ℓ<br>
+                                = a·uₙ + b - (a·ℓ + b)<br>
+                                = a·uₙ - a·ℓ<br>
+                                = a(uₙ - ℓ)<br>
+                                = a·vₙ
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Terme général de (vₙ) :</strong></p>
+                            <div class="formula">
+                                vₙ = v₀ × aⁿ = (u₀ - ℓ) × aⁿ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branche 4: Formule explicite -->
+                <div class="branch branch-4">
+                    <div class="branch-node" onclick="toggleContent(this)">
+                        <h3>📐 Formule Explicite</h3>
+                        <div class="branch-content">
+                            <p><strong class="important">Formule du terme général :</strong></p>
+                            <div class="formula">
+                                uₙ = (u₀ - ℓ) × aⁿ + ℓ
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Dérivation :</strong></p>
+                            <p>Puisque vₙ = uₙ - ℓ, alors :</p>
+                            <div class="formula">
+                                uₙ = vₙ + ℓ = (u₀ - ℓ)aⁿ + ℓ
+                            </div>
+                            
+                            <div class="example">
+                                <strong>Exemple complet :</strong><br>
+                                uₙ₊₁ = 2uₙ + 3, u₀ = 1<br><br>
+                                <strong>Étape 1 :</strong> Point fixe<br>
+                                ℓ = 2ℓ + 3 → ℓ = -3<br><br>
+                                <strong>Étape 2 :</strong> Formule<br>
+                                uₙ = (1 - (-3)) × 2ⁿ + (-3)<br>
+                                <strong>uₙ = 4 × 2ⁿ - 3</strong><br><br>
+                                <strong>Vérification :</strong><br>
+                                u₀ = 4×1 - 3 = 1 ✓<br>
+                                u₁ = 4×2 - 3 = 5 ✓<br>
+                                u₂ = 4×4 - 3 = 13 ✓
+                            </div>
+                            
+                            <div class="example">
+                                <strong>Autre exemple :</strong><br>
+                                uₙ₊₁ = 0,5uₙ + 4, u₀ = 10<br><br>
+                                Point fixe : ℓ = 8<br>
+                                Formule : uₙ = (10 - 8) × 0,5ⁿ + 8<br>
+                                <strong>uₙ = 2 × 0,5ⁿ + 8</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branche 5: Méthode de résolution -->
+                <div class="branch branch-5">
+                    <div class="branch-node" onclick="toggleContent(this)">
+                        <h3>🛠️ Méthode de Résolution</h3>
+                        <div class="branch-content">
+                            <p><strong class="important">Les 4 étapes :</strong></p>
+                            
+                            <div class="method">
+                                <strong>ÉTAPE 1 : Trouver le point fixe</strong><br>
+                                Résoudre : ℓ = a·ℓ + b<br>
+                                → ℓ = b/(1-a)
+                            </div>
+                            
+                            <div class="method">
+                                <strong>ÉTAPE 2 : Définir la suite auxiliaire</strong><br>
+                                Poser : vₙ = uₙ - ℓ<br>
+                                Montrer que vₙ₊₁ = a·vₙ
+                            </div>
+                            
+                            <div class="method">
+                                <strong>ÉTAPE 3 : Trouver vₙ</strong><br>
+                                (vₙ) est géométrique de raison a<br>
+                                → vₙ = v₀ × aⁿ = (u₀ - ℓ) × aⁿ
+                            </div>
+                            
+                            <div class="method">
+                                <strong>ÉTAPE 4 : Déduire uₙ</strong><br>
+                                uₙ = vₙ + ℓ<br>
+                                → <span class="highlight">uₙ = (u₀ - ℓ)aⁿ + ℓ</span>
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>⚠️ Points d'attention :</strong></p>
+                            <ul>
+                                <li>Vérifier que a ≠ 1 et b ≠ 0</li>
+                                <li>Calculer correctement (u₀ - ℓ)</li>
+                                <li>Ne pas oublier le "+ ℓ" final</li>
+                                <li>Vérifier avec les premiers termes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Branche 6: Comportement et convergence -->
+                <div class="branch branch-6">
+                    <div class="branch-node" onclick="toggleContent(this)">
+                        <h3>📊 Comportement & Convergence</h3>
+                        <div class="branch-content">
+                            <p><strong class="important">Selon la valeur de a :</strong></p>
+                            
+                            <div class="method">
+                                <strong>Si |a| < 1 :</strong><br>
+                                • aⁿ → 0 quand n → +∞<br>
+                                • (uₙ) converge vers ℓ<br>
+                                • <span class="highlight">lim uₙ = ℓ</span>
+                            </div>
+                            
+                            <div class="example">
+                                Exemple : uₙ₊₁ = 0,5uₙ + 4<br>
+                                a = 0,5, ℓ = 8<br>
+                                La suite converge vers 8
+                            </div>
+                            
+                            <div class="method">
+                                <strong>Si a > 1 :</strong><br>
+                                • aⁿ → +∞<br>
+                                • Si u₀ > ℓ : uₙ → +∞<br>
+                                • Si u₀ < ℓ : uₙ → -∞
+                            </div>
+                            
+                            <div class="method">
+                                <strong>Si a < -1 :</strong><br>
+                                • aⁿ oscille et croît en valeur absolue<br>
+                                • La suite diverge (pas de limite)
+                            </div>
+                            
+                            <div class="method">
+                                <strong>Si a = -1 :</strong><br>
+                                • La suite oscille entre deux valeurs<br>
+                                • Pas de limite (sauf si u₀ = ℓ)
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Monotonie :</strong></p>
+                            <ul>
+                                <li>Si 0 < a < 1 et u₀ > ℓ : décroissante vers ℓ</li>
+                                <li>Si 0 < a < 1 et u₀ < ℓ : croissante vers ℓ</li>
+                                <li>Si a > 1 : monotone (croissante ou décroissante)</li>
+                                <li>Si a < 0 : ni croissante ni décroissante</li>
+                            </ul>
+                            
+                            <div class="example">
+                                <strong>Résumé pratique :</strong><br>
+                                • <span class="important">-1 < a < 1</span> : converge vers ℓ<br>
+                                • <span class="important">a > 1 ou a < -1</span> : diverge<br>
+                                • <span class="important">a = 1</span> : arithmétique<br>
+                                • <span class="important">a = -1</span> : oscille
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleContent(element) {
+            const content = element.querySelector('.branch-content');
+            const allContents = document.querySelectorAll('.branch-content');
+            
+            // Fermer tous les autres contenus
+            allContents.forEach(c => {
+                if (c !== content) {
+                    c.classList.remove('active');
+                }
+            });
+            
+            // Toggle le contenu actuel
+            content.classList.toggle('active');
+        }
+
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fermer le modal en cliquant sur l'overlay
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            });
+
+            // Fermer avec la touche Échap
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        });
+
+        // Animation d'entrée
+        window.addEventListener('load', () => {
+            const branches = document.querySelectorAll('.branch');
+            branches.forEach((branch, index) => {
+                setTimeout(() => {
+                    branch.style.opacity = '0';
+                    branch.style.transform = 'scale(0.8)';
+                    branch.style.transition = 'all 0.5s ease';
+                    setTimeout(() => {
+                        branch.style.opacity = '1';
+                        branch.style.transform = 'scale(1)';
+                    }, 50);
+                }, index * 100);
+            });
+        });
+
+        // Animation du nœud central
+        const centralNode = document.querySelector('.central-node');
+        centralNode.addEventListener('click', () => {
+            const allContents = document.querySelectorAll('.branch-content');
+            const anyOpen = Array.from(allContents).some(c => c.classList.contains('active'));
+            
+            if (anyOpen) {
+                allContents.forEach(c => c.classList.remove('active'));
+            }
+        });
+    </script>
+</body>
+</html>
