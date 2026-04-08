@@ -4,13 +4,13 @@
 
 ### 🎓 Ressources pédagogiques modernes pour lycéens
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success?style=for-the-badge&logo=github)](https://votre-username.github.io/Siences_courses/)
-[![Niveau](https://img.shields.io/badge/Niveau-Premi%C3%A8re-blue?style=for-the-badge)](https://github.com/votre-username/Siences_courses)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success?style=for-the-badge&logo=github)](https://khalilb130.github.io/Siences_courses/)
+[![Niveau](https://img.shields.io/badge/Niveau-Premi%C3%A8re-blue?style=for-the-badge)](https://github.com/khalilb130/Siences_courses)
 [![Licence](https://img.shields.io/badge/Licence-MIT-green?style=for-the-badge)](LICENSE)
 
 ---
 
-### 🚀 [**ACCÉDER AU SITE WEB**](https://votre-username.github.io/Siences_courses/) 🚀
+### 🚀 [**ACCÉDER AU SITE WEB**](https://khalilb130.github.io/Siences_courses/) 🚀
 
 ---
 
@@ -183,13 +183,13 @@ Siences_courses/
 
 Accédez directement au site web hébergé sur GitHub Pages :
 
-**🔗 [https://votre-username.github.io/Siences_courses/](https://votre-username.github.io/Siences_courses/)**
+**🔗 [https://khalilb130.github.io/Siences_courses/](https://khalilb130.github.io/Siences_courses/)**
 
 ### 📥 Installation locale
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/votre-username/Siences_courses.git
+git clone https://github.com/khalilb130/Siences_courses.git
 
 # 2. Naviguer dans le dossier
 cd Siences_courses
@@ -283,13 +283,13 @@ Vous êtes libre de :
 
 ### Besoin d'aide ou une question ?
 
-[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-orange?style=for-the-badge&logo=github)](https://github.com/votre-username/Siences_courses/issues)
-[![Discussions](https://img.shields.io/badge/GitHub-Discussions-blue?style=for-the-badge&logo=github)](https://github.com/votre-username/Siences_courses/discussions)
+[![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-orange?style=for-the-badge&logo=github)](https://github.com/khalilb130/Siences_courses/issues)
+[![Discussions](https://img.shields.io/badge/GitHub-Discussions-blue?style=for-the-badge&logo=github)](https://github.com/khalilb130/Siences_courses/discussions)
 
 </div>
 
-- 🐛 **Bug ou erreur ?** → [Ouvrir une issue](https://github.com/votre-username/Siences_courses/issues)
-- 💡 **Suggestion ?** → [Démarrer une discussion](https://github.com/votre-username/Siences_courses/discussions)
+- 🐛 **Bug ou erreur ?** → [Ouvrir une issue](https://github.com/khalilb130/Siences_courses/issues)
+- 💡 **Suggestion ?** → [Démarrer une discussion](https://github.com/khalilb130/Siences_courses/discussions)
 - ⭐ **Vous aimez ce projet ?** → Donnez-lui une étoile !
 
 ---
@@ -298,9 +298,9 @@ Vous êtes libre de :
 
 <div align="center">
 
-![GitHub stars](https://img.shields.io/github/stars/votre-username/Siences_courses?style=social)
-![GitHub forks](https://img.shields.io/github/forks/votre-username/Siences_courses?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/votre-username/Siences_courses?style=social)
+![GitHub stars](https://img.shields.io/github/stars/khalilb130/Siences_courses?style=social)
+![GitHub forks](https://img.shields.io/github/forks/khalilb130/Siences_courses?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/khalilb130/Siences_courses?style=social)
 
 </div>
 
@@ -325,5 +325,6 @@ Votre feedback nous aide à améliorer continuellement le projet.
 *Fait avec ❤️ pour les étudiants*
 
 </div>
+
 
 
