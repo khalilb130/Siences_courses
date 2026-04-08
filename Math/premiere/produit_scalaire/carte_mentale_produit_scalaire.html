@@ -483,6 +483,14 @@
                         <p>Formules et méthodes</p>
                     </div>
                 </div>
+
+                <!-- Branche 7: Exercices Types -->
+                <div class="branch branch-7">
+                    <div class="branch-node" onclick="openBranchModal('branch7')">
+                        <h3>✍️ Exercices Types</h3>
+                        <p>Exemples détaillés & corrigés</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -682,6 +690,190 @@
                         <li>$\theta = 90°$ : vecteurs orthogonaux</li>
                         <li>$\theta = 180°$ : vecteurs colinéaires de sens opposé</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Branche 7: Exercices Types -->
+        <div class="branch-modal-overlay" id="branch7">
+            <div class="branch-modal-content">
+                <div class="branch-modal-header" style="border-color: #00b894;">
+                    <h2>✍️ Exercices Types</h2>
+                    <button class="branch-modal-close" onclick="closeBranchModal('branch7')">✕ Fermer</button>
+                </div>
+                <div class="branch-modal-body">
+                    <h3>📝 Exercice 1 : Relation de Chasles</h3>
+                    <div class="example" style="background: #e8f5e9; border-color: #4caf50;">
+                        <p><strong>Énoncé :</strong></p>
+                        <p>Soit $ABCD$ un carré de côté 4. $I$ est le milieu de $[AB]$.</p>
+                        <p>Calculer $\vec{IA} \cdot \vec{IC}$ en utilisant la relation de Chasles.</p>
+                        
+                        <details style="margin-top: 15px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #00b894;">👉 Voir la solution</summary>
+                            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                                <p><strong>Étape 1 :</strong> Utiliser Chasles pour décomposer $\vec{IC}$</p>
+                                <div class="formula">
+                                    $\vec{IC} = \vec{IB} + \vec{BC}$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>Étape 2 :</strong> Développer le produit scalaire</p>
+                                <div class="formula">
+                                    $\vec{IA} \cdot \vec{IC} = \vec{IA} \cdot (\vec{IB} + \vec{BC})$
+                                </div>
+                                <div class="formula">
+                                    $= \vec{IA} \cdot \vec{IB} + \vec{IA} \cdot \vec{BC}$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>Étape 3 :</strong> Calculer chaque produit scalaire</p>
+                                <ul>
+                                    <li>$I$ est le milieu de $[AB]$ donc $IA = IB = 2$</li>
+                                    <li>$\vec{IA}$ et $\vec{IB}$ sont <strong>opposés</strong> donc $\vec{IA} \cdot \vec{IB} = -||\vec{IA}|| \times ||\vec{IB}|| = -2 \times 2 = -4$</li>
+                                    <li>$\vec{IA}$ et $\vec{BC}$ sont <strong>orthogonaux</strong> (angle de 90°) donc $\vec{IA} \cdot \vec{BC} = 0$</li>
+                                </ul>
+                                
+                                <p style="margin-top: 15px;"><strong>Résultat final :</strong></p>
+                                <div class="formula" style="background: #4caf50; color: white;">
+                                    $\vec{IA} \cdot \vec{IC} = -4 + 0 = -4$
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">📝 Exercice 2 : Projection Orthogonale</h3>
+                    <div class="example" style="background: #e3f2fd; border-color: #2196f3;">
+                        <p><strong>Énoncé :</strong></p>
+                        <p>Dans un repère orthonormé, on donne $\vec{u}(3; 4)$ et $\vec{v}(5; 0)$.</p>
+                        <p><strong>1)</strong> Calculer $\vec{u} \cdot \vec{v}$ par la définition analytique.</p>
+                        <p><strong>2)</strong> Calculer $||\vec{u}||$ et $||\vec{v}||$.</p>
+                        <p><strong>3)</strong> En déduire la projection de $\vec{u}$ sur $\vec{v}$ : $\text{proj}_{\vec{v}}(\vec{u})$.</p>
+                        
+                        <details style="margin-top: 15px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #2196f3;">👉 Voir la solution</summary>
+                            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                                <p><strong>1) Produit scalaire analytique :</strong></p>
+                                <div class="formula">
+                                    $\vec{u} \cdot \vec{v} = 3 \times 5 + 4 \times 0 = 15$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>2) Normes des vecteurs :</strong></p>
+                                <div class="formula">
+                                    $||\vec{u}|| = \sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5$
+                                </div>
+                                <div class="formula">
+                                    $||\vec{v}|| = \sqrt{5^2 + 0^2} = \sqrt{25} = 5$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>3) Projection orthogonale :</strong></p>
+                                <p>On utilise la formule : $\vec{u} \cdot \vec{v} = ||\vec{u}|| \times \text{proj}_{\vec{v}}(\vec{u})$</p>
+                                <div class="formula">
+                                    $\text{proj}_{\vec{v}}(\vec{u}) = \frac{\vec{u} \cdot \vec{v}}{||\vec{v}||} = \frac{15}{5} = 3$
+                                </div>
+                                
+                                <p style="margin-top: 10px;"><strong>Interprétation :</strong> La projection de $\vec{u}$ sur l'axe de $\vec{v}$ mesure 3 unités.</p>
+                                
+                                <div class="formula" style="background: #2196f3; color: white; margin-top: 15px;">
+                                    $\text{proj}_{\vec{v}}(\vec{u}) = 3$
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">📝 Exercice 3 : Cercle et Tangente</h3>
+                    <div class="example" style="background: #fff3e0; border-color: #ff9800;">
+                        <p><strong>Énoncé :</strong></p>
+                        <p>Soit le cercle $\mathcal{C}$ de centre $\Omega(2; 3)$ et de rayon $R = 5$.</p>
+                        <p><strong>1)</strong> Donner l'équation du cercle $\mathcal{C}$.</p>
+                        <p><strong>2)</strong> Le point $A(5; 7)$ appartient-il à $\mathcal{C}$ ?</p>
+                        <p><strong>3)</strong> Si oui, donner l'équation de la tangente à $\mathcal{C}$ en $A$.</p>
+                        
+                        <details style="margin-top: 15px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #ff9800;">👉 Voir la solution</summary>
+                            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                                <p><strong>1) Équation du cercle :</strong></p>
+                                <p>Formule générale : $(x - a)^2 + (y - b)^2 = R^2$</p>
+                                <div class="formula">
+                                    $(x - 2)^2 + (y - 3)^2 = 25$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>2) Vérification si $A \in \mathcal{C}$ :</strong></p>
+                                <p>On remplace $x = 5$ et $y = 7$ dans l'équation :</p>
+                                <div class="formula">
+                                    $(5 - 2)^2 + (7 - 3)^2 = 3^2 + 4^2 = 9 + 16 = 25$ ✓
+                                </div>
+                                <p>Oui, $A$ appartient au cercle !</p>
+                                
+                                <p style="margin-top: 15px;"><strong>3) Équation de la tangente en $A$ :</strong></p>
+                                <p>Formule : $(x - a)(x_0 - a) + (y - b)(y_0 - b) = R^2$</p>
+                                <p>Avec $\Omega(2; 3)$, $A(5; 7)$ et $R = 5$ :</p>
+                                <div class="formula">
+                                    $(x - 2)(5 - 2) + (y - 3)(7 - 3) = 25$
+                                </div>
+                                <div class="formula">
+                                    $(x - 2) \times 3 + (y - 3) \times 4 = 25$
+                                </div>
+                                <div class="formula">
+                                    $3x - 6 + 4y - 12 = 25$
+                                </div>
+                                <div class="formula" style="background: #ff9800; color: white;">
+                                    $3x + 4y = 43$
+                                </div>
+                                
+                                <p style="margin-top: 10px;"><strong>Vérification :</strong> La tangente est $\perp$ au rayon $[\Omega A]$</p>
+                                <p>$\vec{\Omega A}(3; 4)$ et vecteur directeur de la tangente : $\vec{n}(-4; 3)$</p>
+                                <p>$\vec{\Omega A} \cdot \vec{n} = 3 \times (-4) + 4 \times 3 = -12 + 12 = 0$ ✓</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">📝 Exercice 4 : Calcul d'Angle</h3>
+                    <div class="example" style="background: #f3e5f5; border-color: #9c27b0;">
+                        <p><strong>Énoncé :</strong></p>
+                        <p>Dans le triangle $ABC$, on donne : $AB = 6$, $AC = 8$ et $BC = 10$.</p>
+                        <p>Calculer la mesure de l'angle $\widehat{BAC}$.</p>
+                        
+                        <details style="margin-top: 15px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #9c27b0;">👉 Voir la solution</summary>
+                            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                                <p><strong>Méthode 1 : Formule du produit scalaire</strong></p>
+                                <div class="formula">
+                                    $\vec{AB} \cdot \vec{AC} = ||\vec{AB}|| \times ||\vec{AC}|| \times \cos(\widehat{BAC})$
+                                </div>
+                                <div class="formula">
+                                    $\vec{AB} \cdot \vec{AC} = 6 \times 8 \times \cos(\widehat{BAC})$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>Calcul de $\vec{AB} \cdot \vec{AC}$ avec Al-Kashi :</strong></p>
+                                <p>Formule d'Al-Kashi : $BC^2 = AB^2 + AC^2 - 2 \cdot AB \cdot AC \cdot \cos(\widehat{BAC})$</p>
+                                <div class="formula">
+                                    $10^2 = 6^2 + 8^2 - 2 \times 6 \times 8 \times \cos(\widehat{BAC})$
+                                </div>
+                                <div class="formula">
+                                    $100 = 36 + 64 - 96 \times \cos(\widehat{BAC})$
+                                </div>
+                                <div class="formula">
+                                    $100 = 100 - 96 \times \cos(\widehat{BAC})$
+                                </div>
+                                <div class="formula">
+                                    $0 = -96 \times \cos(\widehat{BAC})$
+                                </div>
+                                <div class="formula">
+                                    $\cos(\widehat{BAC}) = 0$
+                                </div>
+                                
+                                <p style="margin-top: 15px;"><strong>Résultat :</strong></p>
+                                <div class="formula" style="background: #9c27b0; color: white;">
+                                    $\widehat{BAC} = 90°$
+                                </div>
+                                
+                                <p style="margin-top: 10px;"><strong>Vérification :</strong> C'est un triangle rectangle en $A$ !</p>
+                                <p>En effet : $BC^2 = AB^2 + AC^2$ (théorème de Pythagore) : $100 = 36 + 64$ ✓</p>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="tip" style="margin-top: 30px;">
+                        <strong>💡 Conseil :</strong> Pour réussir ces exercices, commence toujours par un schéma clair !
+                    </div>
                 </div>
             </div>
         </div>

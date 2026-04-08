@@ -502,6 +502,14 @@
                         <p>Étude de la limite</p>
                     </div>
                 </div>
+
+                <!-- Branche 7: Exercices Types -->
+                <div class="branch branch-7">
+                    <div class="branch-node" onclick="openBranchModal('modal7')">
+                        <h3>✍️ Exercices Types</h3>
+                        <p>Exemples détaillés & corrigés</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -930,6 +938,238 @@
                         <strong>Conclusion :</strong> La suite diverge vers $+\infty$<br>
                         (car $u_0 - \ell = 10 - 5 = 5 > 0$)
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 7: Exercices Types -->
+        <div class="branch-modal-overlay" id="modal7">
+            <div class="branch-modal-content">
+                <button class="close-branch-modal" onclick="closeBranchModal('modal7')">✕ Fermer</button>
+                
+                <h2>✍️ Exercices Types</h2>
+                
+                <h3>📝 Exercice 1 : Résolution Complète</h3>
+                <div class="example" style="background: #e8f5e9; border-color: #4caf50;">
+                    <p><strong>Énoncé :</strong></p>
+                    <p>On définit la suite $(u_n)$ par : $u_{n+1} = 0.6 \cdot u_n + 8$ avec $u_0 = 5$</p>
+                    <p><strong>1)</strong> Montrer que la suite est arithmético-géométrique.</p>
+                    <p><strong>2)</strong> Calculer le point fixe $\ell$.</p>
+                    <p><strong>3)</strong> Définir la suite auxiliaire $(v_n)$ et montrer qu'elle est géométrique.</p>
+                    <p><strong>4)</strong> Exprimer $u_n$ en fonction de $n$.</p>
+                    <p><strong>5)</strong> Calculer $u_{10}$ (arrondir à 0.01 près).</p>
+                    
+                    <details style="margin-top: 15px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #00b894;">👉 Voir la solution complète</summary>
+                        <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                            <p><strong>1) Vérification :</strong></p>
+                            <p>La relation $u_{n+1} = 0.6 \cdot u_n + 8$ est de la forme $u_{n+1} = a \cdot u_n + b$</p>
+                            <ul>
+                                <li>$a = 0.6 \neq 1$ ✓</li>
+                                <li>$b = 8 \neq 0$ ✓</li>
+                            </ul>
+                            <p>C'est bien une suite arithmético-géométrique.</p>
+                            
+                            <p style="margin-top: 15px;"><strong>2) Point fixe :</strong></p>
+                            <div class="formula">
+                                $\ell = \frac{b}{1-a} = \frac{8}{1-0.6} = \frac{8}{0.4} = 20$
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>3) Suite auxiliaire :</strong></p>
+                            <p>On pose : $v_n = u_n - \ell = u_n - 20$</p>
+                            <div class="step">
+                                $v_{n+1} = u_{n+1} - 20$<br>
+                                $= 0.6 \cdot u_n + 8 - 20$<br>
+                                $= 0.6 \cdot u_n - 12$<br>
+                                $= 0.6(u_n - 20)$<br>
+                                $= 0.6 \cdot v_n$
+                            </div>
+                            <p>Donc $(v_n)$ est géométrique de raison $a = 0.6$ ✓</p>
+                            
+                            <p style="margin-top: 15px;"><strong>4) Expression de $u_n$ :</strong></p>
+                            <p>$v_0 = u_0 - \ell = 5 - 20 = -15$</p>
+                            <div class="formula">
+                                $v_n = v_0 \times a^n = -15 \times (0.6)^n$
+                            </div>
+                            <p>Comme $u_n = v_n + \ell$ :</p>
+                            <div class="formula" style="background: #4caf50; color: white;">
+                                $u_n = -15 \times (0.6)^n + 20$
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>5) Calcul de $u_{10}$ :</strong></p>
+                            <div class="formula">
+                                $u_{10} = -15 \times (0.6)^{10} + 20$
+                            </div>
+                            <div class="formula">
+                                $(0.6)^{10} \approx 0.006047$
+                            </div>
+                            <div class="formula">
+                                $u_{10} = -15 \times 0.006047 + 20 \approx -0.09 + 20 = 19.91$
+                            </div>
+                            <div class="formula" style="background: #4caf50; color: white;">
+                                $u_{10} \approx 19.91$
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <h3 style="margin-top: 30px;">📝 Exercice 2 : Étude de Convergence</h3>
+                <div class="example" style="background: #e3f2fd; border-color: #2196f3;">
+                    <p><strong>Énoncé :</strong></p>
+                    <p>Soit la suite $(u_n)$ définie par : $u_{n+1} = -0.8 \cdot u_n + 6$ avec $u_0 = 10$</p>
+                    <p><strong>1)</strong> Calculer le point fixe $\ell$.</p>
+                    <p><strong>2)</strong> La suite converge-t-elle ? Si oui, vers quelle valeur ?</p>
+                    <p><strong>3)</strong> Justifier rigoureusement.</p>
+                    
+                    <details style="margin-top: 15px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #2196f3;">👉 Voir la solution</summary>
+                        <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                            <p><strong>1) Point fixe :</strong></p>
+                            <div class="formula">
+                                $\ell = \frac{b}{1-a} = \frac{6}{1-(-0.8)} = \frac{6}{1.8} = \frac{10}{3}$
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>2) Convergence :</strong></p>
+                            <p>On étudie la valeur de $|a|$ :</p>
+                            <div class="formula">
+                                $|a| = |-0.8| = 0.8 < 1$
+                            </div>
+                            <p>Comme $|a| < 1$, la suite <strong>converge vers le point fixe</strong> $\ell = \frac{10}{3}$.</p>
+                            
+                            <p style="margin-top: 15px;"><strong>3) Justification rigoureuse :</strong></p>
+                            <p>On a : $u_n = (u_0 - \ell) \times a^n + \ell$</p>
+                            <p>Donc : $u_n = (10 - \frac{10}{3}) \times (-0.8)^n + \frac{10}{3}$</p>
+                            <p>Soit : $u_n = \frac{20}{3} \times (-0.8)^n + \frac{10}{3}$</p>
+                            
+                            <p style="margin-top: 10px;">Quand $n \to +\infty$ :</p>
+                            <ul>
+                                <li>$|a| = 0.8 < 1$ donc $(-0.8)^n \to 0$</li>
+                                <li>Donc $\frac{20}{3} \times (-0.8)^n \to 0$</li>
+                            </ul>
+                            
+                            <p style="margin-top: 10px;">Par conséquent :</p>
+                            <div class="formula" style="background: #2196f3; color: white;">
+                                $\lim_{n \to +\infty} u_n = \frac{10}{3} \approx 3.33$
+                            </div>
+                            
+                            <p style="margin-top: 10px;"><strong>Remarque :</strong> Même si $a$ est négatif, la suite converge car $|a| < 1$ !</p>
+                        </div>
+                    </details>
+                </div>
+
+                <h3 style="margin-top: 30px;">📝 Exercice 3 : Démonstration par Récurrence</h3>
+                <div class="example" style="background: #fff3e0; border-color: #ff9800;">
+                    <p><strong>Énoncé :</strong></p>
+                    <p>Soit $(u_n)$ définie par : $u_{n+1} = 0.5 \cdot u_n + 4$ avec $u_0 = 0$</p>
+                    <p>On admet que $u_n = 8 - 8 \times (0.5)^n$.</p>
+                    <p>Démontrer par récurrence que pour tout $n \in \mathbb{N}$ : $u_n < 8$</p>
+                    
+                    <details style="margin-top: 15px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #ff9800;">👉 Voir la solution</summary>
+                        <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                            <p><strong>Propriété à démontrer :</strong></p>
+                            <div class="formula">
+                                $\mathcal{P}(n) : u_n < 8$
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Initialisation ($n = 0$) :</strong></p>
+                            <div class="formula">
+                                $u_0 = 0 < 8$ ✓
+                            </div>
+                            <p>La propriété est vraie au rang 0.</p>
+                            
+                            <p style="margin-top: 15px;"><strong>Hérédité :</strong></p>
+                            <p>Supposons que $\mathcal{P}(n)$ est vraie : $u_n < 8$</p>
+                            <p>Montrons que $\mathcal{P}(n+1)$ est vraie : $u_{n+1} < 8$</p>
+                            
+                            <div class="step">
+                                On a : $u_{n+1} = 0.5 \cdot u_n + 4$
+                            </div>
+                            <div class="step">
+                                Par hypothèse de récurrence : $u_n < 8$<br>
+                                Donc : $0.5 \cdot u_n < 0.5 \times 8 = 4$
+                            </div>
+                            <div class="step">
+                                En ajoutant 4 des deux côtés :<br>
+                                $0.5 \cdot u_n + 4 < 4 + 4 = 8$
+                            </div>
+                            <div class="step">
+                                Donc : $u_{n+1} < 8$ ✓
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Conclusion :</strong></p>
+                            <div class="formula" style="background: #ff9800; color: white;">
+                                $\mathcal{P}(0)$ vraie et $\mathcal{P}(n) \Rightarrow \mathcal{P}(n+1)$<br>
+                                Donc $\forall n \in \mathbb{N}, u_n < 8$
+                            </div>
+                            
+                            <p style="margin-top: 10px;"><strong>Interprétation :</strong> La suite reste toujours strictement inférieure à son point fixe $\ell = 8$ !</p>
+                        </div>
+                    </details>
+                </div>
+
+                <h3 style="margin-top: 30px;">📝 Exercice 4 : Seuil</h3>
+                <div class="example" style="background: #f3e5f5; border-color: #9c27b0;">
+                    <p><strong>Énoncé :</strong></p>
+                    <p>Soit $(u_n)$ définie par : $u_{n+1} = 0.7 \cdot u_n + 6$ avec $u_0 = 2$</p>
+                    <p>On admet que $u_n = 20 - 18 \times (0.7)^n$.</p>
+                    <p>À partir de quel rang $n$ a-t-on : $u_n > 19$ ?</p>
+                    
+                    <details style="margin-top: 15px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #9c27b0;">👉 Voir la solution</summary>
+                        <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 8px;">
+                            <p><strong>On cherche $n$ tel que :</strong></p>
+                            <div class="formula">
+                                $u_n > 19$
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Résolution :</strong></p>
+                            <div class="step">
+                                $20 - 18 \times (0.7)^n > 19$
+                            </div>
+                            <div class="step">
+                                $-18 \times (0.7)^n > -1$
+                            </div>
+                            <div class="step">
+                                $18 \times (0.7)^n < 1$ (on change le sens car on divise par $-1$)
+                            </div>
+                            <div class="step">
+                                $(0.7)^n < \frac{1}{18}$
+                            </div>
+                            <div class="step">
+                                $n \times \ln(0.7) < \ln\left(\frac{1}{18}\right)$
+                            </div>
+                            <div class="step">
+                                $n > \frac{\ln(\frac{1}{18})}{\ln(0.7)}$ (le sens change car $\ln(0.7) < 0$)
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Calcul numérique :</strong></p>
+                            <div class="formula">
+                                $\ln(\frac{1}{18}) = \ln(1) - \ln(18) = -\ln(18) \approx -2.890$
+                            </div>
+                            <div class="formula">
+                                $\ln(0.7) \approx -0.357$
+                            </div>
+                            <div class="formula">
+                                $n > \frac{-2.890}{-0.357} \approx 8.10$
+                            </div>
+                            
+                            <p style="margin-top: 15px;"><strong>Conclusion :</strong></p>
+                            <div class="formula" style="background: #9c27b0; color: white;">
+                                À partir du rang $n = 9$, on a $u_n > 19$
+                            </div>
+                            
+                            <p style="margin-top: 10px;"><strong>Vérification :</strong></p>
+                            <ul>
+                                <li>$u_8 = 20 - 18 \times (0.7)^8 \approx 20 - 1.04 = 18.96 < 19$ ✓</li>
+                                <li>$u_9 = 20 - 18 \times (0.7)^9 \approx 20 - 0.73 = 19.27 > 19$ ✓</li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="tip" style="margin-top: 30px;">
+                    <strong>💡 Méthodologie :</strong> Les 5 étapes (Identifier, Point fixe, Suite auxiliaire, Formule explicite, Convergence) sont systématiques !
                 </div>
             </div>
         </div>
