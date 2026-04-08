@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathématiques - Cartes Mentales Interactives</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .header .emoji {
+            font-size: 1.2em;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-top: 10px;
+        }
+
+        .level-section {
+            margin: 50px 0;
+            animation: fadeIn 1s ease;
+        }
+
+        .level-title {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 5px solid white;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            transition: height 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .card:hover::before {
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        .card-icon {
+            font-size: 3.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .card p {
+            color: #7f8c8d;
+            text-align: center;
+            line-height: 1.7;
+            font-size: 1.05em;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        .badge:hover {
+            transform: scale(1.1);
+        }
+
+        .badge-interactive {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .badge-premiere {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .badge-new {
+            background: #27ae60;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .coming-soon:hover {
+            transform: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .coming-soon::after {
+            content: 'Prochainement';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .features {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 50px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .features h2 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-item .icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .feature-item h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-item p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 50px;
+            opacity: 0.9;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: opacity 0.3s ease;
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .level-title {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="emoji">📐</span> Mathématiques <span class="emoji">📊</span></h1>
+            <p>Cartes Mentales Interactives pour Réviser et Réussir</p>
+        </div>
+
+        <!-- Première -->
+        <div class="level-section">
+            <h2 class="level-title">🎓 Niveau Première</h2>
+            
+            <div class="cards-grid">
+                <!-- Produit Scalaire -->
+                <a href="premiere/produit_scalaire/carte_mentale_produit_scalaire.html" class="card">
+                    <div class="card-icon">📐</div>
+                    <h3>Produit Scalaire</h3>
+                    <p>
+                        Maîtrise toutes les définitions, propriétés et applications du produit scalaire.
+                        Inclut les formules d'orthogonalité, les équations de cercle et tangentes, et la relation de Chasles avec exercices types.
+                    </p>
+                    <div class="card-footer">
+                        <span class="badge badge-interactive">✨ Interactive</span>
+                        <span class="badge badge-premiere">1ère</span>
+                        <span class="badge badge-new">🔥 Nouveau</span>
+                    </div>
+                </a>
+
+                <!-- Suites Arithmético-Géométriques -->
+                <a href="premiere/suite_arithmeco_geo/carte_mentale_suites_arithmetico_geometriques.html" class="card">
+                    <div class="card-icon">🔢</div>
+                    <h3>Suites Arithmético-Géométriques</h3>
+                    <p>
+                        Comprends la méthode complète : point fixe, suite auxiliaire, formule explicite.
+                        Avec méthodes détaillées pour calculer, démontrer la convergence et éviter les pièges courants.
+                    </p>
+                    <div class="card-footer">
+                        <span class="badge badge-interactive">✨ Interactive</span>
+                        <span class="badge badge-premiere">1ère</span>
+                        <span class="badge badge-new">🔥 Nouveau</span>
+                    </div>
+                </a>
+
+                <!-- Dérivation (à venir) -->
+                <div class="card coming-soon">
+                    <div class="card-icon">📈</div>
+                    <h3>Dérivation</h3>
+                    <p>
+                        Fonctions dérivées, tangentes, sens de variation.
+                        Toutes les formules et méthodes pour maîtriser la dérivation.
+                    </p>
+                    <div class="card-footer">
+                        <span class="badge badge-premiere">1ère</span>
+                    </div>
+                </div>
+
+                <!-- Fonctions Exponentielles -->
+                <div class="card coming-soon">
+                    <div class="card-icon">📊</div>
+                    <h3>Fonction Exponentielle</h3>
+                    <p>
+                        Propriétés, dérivée, équations et inéquations.
+                        Applications en sciences et économie.
+                    </p>
+                    <div class="card-footer">
+                        <span class="badge badge-premiere">1ère</span>
+                    </div>
+                </div>
+
+                <!-- Probabilités Conditionnelles -->
+                <div class="card coming-soon">
+                    <div class="card-icon">🎲</div>
+                    <h3>Probabilités Conditionnelles</h3>
+                    <p>
+                        Arbres pondérés, formules de Bayes, événements indépendants.
+                        Méthodes pour résoudre tous les types d'exercices.
+                    </p>
+                    <div class="card-footer">
+                        <span class="badge badge-premiere">1ère</span>
+                    </div>
+                </div>
+
+                <!-- Variables Aléatoires -->
+                <div class="card coming-soon">
+                    <div class="card-icon">📉</div>
+                    <h3>Variables Aléatoires</h3>
+                    <p>
+                        Loi de probabilité, espérance, variance, écart-type.
+                        Loi binomiale et applications concrètes.
+                    </p>
+                    <div class="card-footer">
+                        <span class="badge badge-premiere">1ère</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fonctionnalités -->
+        <div class="features">
+            <h2>✨ Fonctionnalités de nos Cartes Interactives</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="icon">🎯</div>
+                    <h4>Notions Essentielles</h4>
+                    <p>Toutes les formules et propriétés à connaître par cœur, organisées et claires</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="icon">📝</div>
+                    <h4>Méthodes Détaillées</h4>
+                    <p>Pas à pas pour chaque type d'exercice, avec exemples et exercices corrigés</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="icon">💡</div>
+                    <h4>Astuces & Pièges</h4>
+                    <p>Les erreurs à éviter et les techniques pour gagner du temps en DS</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="icon">🎨</div>
+                    <h4>Interface Intuitive</h4>
+                    <p>Design moderne et interactif, clic sur chaque section pour explorer</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="icon">📱</div>
+                    <h4>Responsive</h4>
+                    <p>Accessible sur ordinateur, tablette et smartphone</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="icon">🚀</div>
+                    <h4>Révisions Efficaces</h4>
+                    <p>Organisé pour des révisions rapides avant un contrôle ou examen</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 <strong>Sciences Courses</strong> - Cartes Mentales Mathématiques</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                <a href="../index.html">← Retour à l'accueil</a>
+            </p>
+            <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9em;">
+                © 2026 - Ressources pédagogiques pour la réussite
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Animation au chargement
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 100);
+            });
+        });
+
+        // Empêcher le clic sur les cartes "coming soon"
+        document.querySelectorAll('.coming-soon').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
